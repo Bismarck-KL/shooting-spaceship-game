@@ -62,12 +62,14 @@ class Stone(pygame.sprite.Sprite):
         self.rect.y = random.randint(-100, -40)
         self.speedy = random.randint(1,6)
         self.speedx = random.randint(-2, 2)
-
     def __init__(self):
         super().__init__()
-        self.image = pygame.Surface((20, 20))
+        self.size = random.randint(20,50)
+        self.image = pygame.Surface((self.size, self.size))
         self.image.fill(brown)  # Brown stone
         self.rect = self.image.get_rect()
+        self.radius = self.rect.width * 0.85 /2
+        # pygame.draw.circle(self.image,red,self.rect.center,self.radius) #Debug rendering
         self.reset_position()    
 
     def update(self):

@@ -17,6 +17,8 @@ pygame.init()
 black = (0, 0, 0)  # Black
 green = (0, 255, 0)  # Green
 brown = (139, 69, 19)  # Brown
+red = (255, 0, 0)  # Red
+yellow = (255, 255, 0)  # Yellow
 
 # Player class
 class Player(pygame.sprite.Sprite):
@@ -47,8 +49,8 @@ class Player(pygame.sprite.Sprite):
             if self.rect.bottom > height:
                 self.rect.bottom = height
 
+# Stone class 
 class Stone(pygame.sprite.Sprite):
-
     def reset_position(self):
         # some stones may appear partially off-screen
         self.rect.x = random.randint(-100, width - self.rect.width+100) 
@@ -68,6 +70,27 @@ class Stone(pygame.sprite.Sprite):
         self.rect.y += self.speedy
         if self.rect.top > height:
             self.reset_position() 
+
+# Bullet class
+class Bullet(pygame.sprite.Sprite):
+    def __init__(self, x, y, type):
+        super().__init__()
+        self.image = pygame.Surface((5, 10))
+        if type == 'player':
+            self.image.fill(yellow)  # Yellow bullet for player
+            self.speedy = -10
+        else:    
+            self.image.fill(red)  # Red bullet for enemy
+            self.speedy = 5
+
+        self.rect = self.image.get_rect()
+        self.rect.center = (x, y)
+
+    def update(self):
+        self.rect.y += self.speedy
+        if self.rect.bottom < 0 or self.rect.top > height:
+            self.kill()  # Remove the bullet if it goes off-screen
+        
 
 # Create sprite groups
 all_sprites = pygame.sprite.Group()

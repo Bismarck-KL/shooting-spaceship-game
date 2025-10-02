@@ -48,30 +48,32 @@ class Player(pygame.sprite.Sprite):
                 self.rect.bottom = height
 
 class Stone(pygame.sprite.Sprite):
+
+    def reset_position(self):
+        # some stones may appear partially off-screen
+        self.rect.x = random.randint(-100, width - self.rect.width+100) 
+        self.rect.y = random.randint(-100, -40)
+        self.speedy = random.randint(1, 8)
+
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((20, 20))
         self.image.fill((139, 69, 19))  # Brown stone
         self.rect = self.image.get_rect()
-        self.reset_position(self)    
-
-    def reset_position(self):
-        self.rect.x = random.randint(0, width - self.rect.width)
-        self.rect.y = random.randint(-100, -40)
-        self.speedy = random.randint(1, 8)
+        self.reset_position()    
 
     def update(self):
         self.rect.y += self.speedy
         if self.rect.top > height:
-            self.reset_position(self) 
+            self.reset_position() 
 
 # Create sprite groups
 all_sprites = pygame.sprite.Group()
 player = Player()
-stone = Stone()
-all_sprites.add(stone)
 all_sprites.add(player)
-
+for _ in range(8):
+    stone = Stone()
+    all_sprites.add(stone)
 
 while running:
     for event in pygame.event.get():

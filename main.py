@@ -49,6 +49,10 @@ class Player(pygame.sprite.Sprite):
             if self.rect.bottom > height:
                 self.rect.bottom = height
 
+    def shoot(self):
+        bullet = Bullet(self.rect.centerx, self.rect.top, 'player')
+        all_sprites.add(bullet)
+
 # Stone class 
 class Stone(pygame.sprite.Sprite):
     def reset_position(self):
@@ -108,6 +112,8 @@ while running:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 running = False
+            elif event.key == pygame.K_SPACE:
+                player.shoot()  # Player shoots a bullet
 
     all_sprites.update()  # Update all sprites
 

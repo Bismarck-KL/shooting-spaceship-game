@@ -14,6 +14,39 @@ pygame.init()
 
 # Colors
 black = (0, 0, 0)  # Black
+green = (0, 255, 0)  # Green
+
+class Player(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.Surface((30, 40))
+        self.image.fill(green)  # Green spaceship
+        self.rect = self.image.get_rect()
+        self.rect.center = (width // 2, height // 2)
+
+    def update(self):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LEFT]:
+            self.rect.x -= 5
+            if self.rect.left < 0:
+                self.rect.left = 0
+        if keys[pygame.K_RIGHT]:
+            self.rect.x += 5
+            if self.rect.right > width:
+                self.rect.right = width
+        if keys[pygame.K_UP]:
+            self.rect.y -= 5
+            if self.rect.top < 0:
+                self.rect.top = 0   
+        if keys[pygame.K_DOWN]:
+            self.rect.y += 5
+            if self.rect.bottom > height:
+                self.rect.bottom = height
+
+all_sprites = pygame.sprite.Group()
+player = Player()
+all_sprites.add(player)
+
 
 while running:
     for event in pygame.event.get():
@@ -23,7 +56,10 @@ while running:
             if event.key == pygame.K_ESCAPE:
                 running = False
 
+    all_sprites.update()  # Update all sprites
+
     screen.fill(black)  # Clear screen with black
+    all_sprites.draw(screen)  # Draw all sprites
     pygame.display.flip()  # Update the display
     clock.tick(frame_per_seconds)  # Maintain 60 FPS
 

@@ -52,6 +52,7 @@ class Player(pygame.sprite.Sprite):
     def shoot(self):
         bullet = Bullet(self.rect.centerx, self.rect.top, 'player')
         all_sprites.add(bullet)
+        player_bullets.add(bullet)  
 
 # Stone class 
 class Stone(pygame.sprite.Sprite):
@@ -99,11 +100,14 @@ class Bullet(pygame.sprite.Sprite):
 
 # Create sprite groups
 all_sprites = pygame.sprite.Group()
+stones = pygame.sprite.Group()
+player_bullets = pygame.sprite.Group()
 player = Player()
 all_sprites.add(player)
 for _ in range(8):
     stone = Stone()
     all_sprites.add(stone)
+    stones.add(stone)
 
 while running:
     for event in pygame.event.get():

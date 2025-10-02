@@ -1,4 +1,5 @@
 import pygame 
+import random
 
 # Set up display
 width, height = 800, 600
@@ -46,8 +47,29 @@ class Player(pygame.sprite.Sprite):
             if self.rect.bottom > height:
                 self.rect.bottom = height
 
+class Stone(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.Surface((20, 20))
+        self.image.fill((139, 69, 19))  # Brown stone
+        self.rect = self.image.get_rect()
+        self.reset_position(self)    
+
+    def reset_position(self):
+        self.rect.x = random.randint(0, width - self.rect.width)
+        self.rect.y = random.randint(-100, -40)
+        self.speedy = random.randint(1, 8)
+
+    def update(self):
+        self.rect.y += self.speedy
+        if self.rect.top > height:
+            self.reset_position(self) 
+
+# Create sprite groups
 all_sprites = pygame.sprite.Group()
 player = Player()
+stone = Stone()
+all_sprites.add(stone)
 all_sprites.add(player)
 
 

@@ -83,6 +83,7 @@ class Bullet(pygame.sprite.Sprite):
             self.image.fill(red)  # Red bullet for enemy
             self.speedy = 5
 
+        self.type = type
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
 

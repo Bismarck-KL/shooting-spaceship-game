@@ -53,7 +53,8 @@ class Stone(pygame.sprite.Sprite):
         # some stones may appear partially off-screen
         self.rect.x = random.randint(-100, width - self.rect.width+100) 
         self.rect.y = random.randint(-100, -40)
-        self.speedy = random.randint(1, 8)
+        self.speedy = random.randint(1,6)
+        self.speedx = random.randint(-2, 2)
 
     def __init__(self):
         super().__init__()
@@ -63,6 +64,7 @@ class Stone(pygame.sprite.Sprite):
         self.reset_position()    
 
     def update(self):
+        self.rect.x += self.speedx
         self.rect.y += self.speedy
         if self.rect.top > height:
             self.reset_position() 

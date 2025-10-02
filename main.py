@@ -12,13 +12,18 @@ frame_per_seconds = 60
 # Initialize pygame
 pygame.init()
 
+# Colors
+black = (0, 0, 0)  # Black
 
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                running = False
 
-    screen.fill((0, 0, 0))  # Clear screen with black
+    screen.fill(black)  # Clear screen with black
     pygame.display.flip()  # Update the display
     clock.tick(frame_per_seconds)  # Maintain 60 FPS
 

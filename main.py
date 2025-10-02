@@ -120,6 +120,19 @@ while running:
                 player.shoot()  # Player shoots a bullet
 
     all_sprites.update()  # Update all sprites
+    stone_playerbullet_hit = pygame.sprite.groupcollide(stones, player_bullets, True, True)  # Check for collisions between stones and player bullets
+    if stone_playerbullet_hit:
+        for _ in stone_playerbullet_hit:
+            stone = Stone()
+            all_sprites.add(stone)
+            stones.add(stone)
+
+    palyer_stone_hit = pygame.sprite.spritecollide(player, stones, False)  # Check for collisions between player and stones
+    if palyer_stone_hit:
+        # disable the stone
+        stone = palyer_stone_hit[0]
+        stone.kill()
+
 
     screen.fill(black)  # Clear screen with black
     all_sprites.draw(screen)  # Draw all sprites

@@ -16,7 +16,7 @@ pygame.init()
 # Colors
 black = (0, 0, 0)  # Black
 green = (0, 255, 0)  # Green
-
+brown = (139, 69, 19)  # Brown
 
 # Player class
 class Player(pygame.sprite.Sprite):
@@ -59,7 +59,7 @@ class Stone(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((20, 20))
-        self.image.fill((139, 69, 19))  # Brown stone
+        self.image.fill(brown)  # Brown stone
         self.rect = self.image.get_rect()
         self.reset_position()    
 

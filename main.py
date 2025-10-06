@@ -25,6 +25,25 @@ brown = (139, 69, 19)  # Brown
 red = (255, 0, 0)  # Red
 yellow = (255, 255, 0)  # Yellow
 
+def random_star_speed():
+    return random.uniform(1, 30)
+
+# Initialize water particles with actual speeds
+star_particles = [(random.randint(0, width), random.randint(-height, 0), random_star_speed()) for _ in range(20)]  # (x, y, speed)
+
+def draw_star():
+    global star_particles
+    for i, (x, y, speed) in enumerate(star_particles):
+        y += speed  # Move down by the speed
+        if y > height:  # If the star goes off the screen
+            y = random.randint(-height, 0)  # Reset to a new position at the top
+            x = random.randint(0, width)  # Randomize the x position
+            speed = random_star_speed()  # Randomize speed
+        star_particles[i] = (x, y, speed)  # Update the particle position and speed
+
+    # Draw the stars on the screen
+    for x, y, _ in star_particles:
+        pygame.draw.circle(screen, white, (int(x), int(y)), random.randint(1, 3))  # For radius, using a small random size
 
 # Player class
 class Player(pygame.sprite.Sprite):
@@ -75,7 +94,6 @@ class Player(pygame.sprite.Sprite):
         if self.health_point <=0:
             game_status = "End"
 
-
 # Stone class 
 class Stone(pygame.sprite.Sprite):
     def reset_position(self):
@@ -86,7 +104,7 @@ class Stone(pygame.sprite.Sprite):
         self.speedx = random.randint(-2, 2)
     def __init__(self):
         super().__init__()
-        self.size = random.randint(20,50)
+        self.size = random.randint(20,100)
         self.image = pygame.Surface((self.size, self.size))
         self.image.fill(brown)  # Brown stone
         self.rect = self.image.get_rect()
@@ -177,6 +195,7 @@ while running:
 
     match game_status:
         case "Playing":
+            draw_star()
             all_sprites.update()  # Update all sprites
             stone_playerbullet_hit = pygame.sprite.groupcollide(stones, player_bullets, False, False)  # Check for collisions between stones and player bullets
             if stone_playerbullet_hit:

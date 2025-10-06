@@ -53,6 +53,28 @@ def draw_star():
     for x, y, _ in star_particles:
         pygame.draw.circle(screen, star_color, (int(x), int(y)), random.randint(1, 3))  # For radius, using a small random size
 
+
+class Particle(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        self.image = pygame.Surface((3, 5))  # Small particle size
+        self.image.fill((255, 165, 0))  # Orange color for the fire effect
+        self.rect = self.image.get_rect(center=(x, y))
+        
+        # Set a random velocity
+        self.velocity_x = random.uniform(-1, 1)
+        self.velocity_y = random.uniform(1, 1)  # Move down
+        self.lifetime = 20  # Lifetime in frames
+
+    def update(self):
+        self.rect.x += self.velocity_x
+        self.rect.y += self.velocity_y
+        self.lifetime -= 1
+
+        # Fade out effect
+        if self.lifetime <= 0:
+            self.kill()  # Remove the particle when its lifetime is over
+
 # Player class
 class Player(pygame.sprite.Sprite):
     def __init__(self, spaceship_img, width, height, speed=4, shooting_speed=200):
@@ -74,10 +96,14 @@ class Player(pygame.sprite.Sprite):
         self.flashing = False  # Track if flashing is active
         self.flash_start_time = 0  # Track when the flash started
 
+        self.particles = pygame.sprite.Group()
+
     def update(self):
         self.handle_movement()
         self.handle_shooting()
         self.handle_flashing()
+        self.generate_particles()  # Generate particles
+        self.particles.update()  # Update particles
 
     def handle_movement(self):
         keys = pygame.key.get_pressed()
@@ -132,6 +158,13 @@ class Player(pygame.sprite.Sprite):
     def flash_white(self):
         self.flashing = True
         self.flash_start_time = pygame.time.get_ticks()
+
+    def generate_particles(self):
+            # Generate a new particle at the tail of the spaceship
+            if random.randint(0, 2) == 0:  # Adjust frequency of particle generation
+                particle = Particle(self.rect.centerx, self.rect.bottom)
+                self.particles.add(particle)  # Add particle to the group
+
 # Stone class 
 class Stone(pygame.sprite.Sprite):
     def reset_position(self):
@@ -257,6 +290,7 @@ while running:
                 player.set_health_point(-1)
                 player.flash_white()
 
+            player.particles.draw(screen)
             all_sprites.draw(screen)  # Draw all sprites
             draw_game_ui()
         case "End":

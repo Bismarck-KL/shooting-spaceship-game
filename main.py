@@ -11,10 +11,6 @@ running = True
 
 frame_per_seconds = 60
 
-# Game data
-game_status = "Pending"
-game_score = 0
-
 # Initialize pygame
 pygame.init()
 
@@ -63,7 +59,7 @@ class Particle(pygame.sprite.Sprite):
         
         # Set a random velocity
         self.velocity_x = random.uniform(-1, 1)
-        self.velocity_y = random.uniform(1, 1)  # Move down
+        self.velocity_y = random.uniform(1, 2)  # Move down
         self.lifetime = 20  # Lifetime in frames
 
     def update(self):
@@ -79,10 +75,10 @@ class Particle(pygame.sprite.Sprite):
 class Player(pygame.sprite.Sprite):
     def __init__(self, spaceship_img, width, height, speed=4, shooting_speed=200):
         super().__init__()
-        
+
         # Load and scale the spaceship image
         self.image = pygame.transform.scale(spaceship_img, (50, 50))
-        self.image.set_colorkey(white)  # Set white as the transparent color
+        self.image.set_colorkey((255, 255, 255))  # Set white as the transparent color
         
         self.rect = self.image.get_rect(center=(width // 2, height // 2))
         
@@ -98,7 +94,15 @@ class Player(pygame.sprite.Sprite):
 
         self.particles = pygame.sprite.Group()
 
+    def retry(self, width, height):
+        """Reset player attributes and position."""
+        self.health_point = 3
+        self.speed = 4
+        self.shooting_speed = 200  # Reset shooting speed
+        self.rect.center = (width // 2, height // 2)  # Reset position to center
+
     def update(self):
+        """Update player state."""
         self.handle_movement()
         self.handle_shooting()
         self.handle_flashing()
@@ -106,6 +110,7 @@ class Player(pygame.sprite.Sprite):
         self.particles.update()  # Update particles
 
     def handle_movement(self):
+        """Handle player movement based on key presses."""
         keys = pygame.key.get_pressed()
         if keys[pygame.K_a]:  # Move left
             self.rect.x -= self.speed
@@ -125,45 +130,53 @@ class Player(pygame.sprite.Sprite):
                 self.rect.bottom = height
 
     def handle_shooting(self):
+        """Handle shooting mechanics."""
         current_time = pygame.time.get_ticks()
         if current_time - self.last_shot_time >= self.shooting_speed:
             self.last_shot_time = current_time  # Update the last shot time
             self.shoot()
 
     def handle_flashing(self):
+        """Handle flashing effect when hit."""
         current_time = pygame.time.get_ticks()
         if self.flashing:
             if current_time - self.flash_start_time < 750:  # Flashing duration
                 if (current_time // 100) % 2 == 0:  # Flash every 100 ms
                     self.image.fill((255, 255, 255))  # Flash white
                 else:
-                    self.image = pygame.transform.scale(spaceship_img, (50, 50))  # Reset to original
-                    self.image.set_colorkey(white)
+                    self.reset_image()  # Reset to original
             else:
                 self.flashing = False  # Stop flashing
-                self.image = pygame.transform.scale(spaceship_img, (50, 50))  # Ensure it resets to original
-                self.image.set_colorkey(white)
+                self.reset_image()  # Ensure it resets to original
+
+    def reset_image(self):
+        """Reset the player image to the original."""
+        self.image = pygame.transform.scale(spaceship_img, (50, 50))  # Reset to original size
+        self.image.set_colorkey((255, 255, 255))  # Reset transparency
 
     def shoot(self):
+        """Shoot a bullet."""
         bullet = Bullet(self.rect.centerx, self.rect.top, 'player')
         all_sprites.add(bullet)
         player_bullets.add(bullet)
 
     def set_health_point(self, point):
+        """Update health points."""
         global game_status
         self.health_point += point
         if self.health_point <= 0:
             game_status = "End"
 
     def flash_white(self):
+        """Trigger white flash effect."""
         self.flashing = True
         self.flash_start_time = pygame.time.get_ticks()
 
     def generate_particles(self):
-            # Generate a new particle at the tail of the spaceship
-            if random.randint(0, 2) == 0:  # Adjust frequency of particle generation
-                particle = Particle(self.rect.centerx, self.rect.bottom)
-                self.particles.add(particle)  # Add particle to the group
+        """Generate particles at the tail of the spaceship."""
+        if random.randint(0, 2) == 0:  # Adjust frequency of particle generation
+            particle = Particle(self.rect.centerx, self.rect.bottom)
+            self.particles.add(particle)
 
 # Stone class 
 class Stone(pygame.sprite.Sprite):
@@ -223,6 +236,10 @@ for _ in range(8):
     all_sprites.add(stone)
     stones.add(stone)
 
+game_status = "Playing"
+game_score = 0
+
+
 # Font setup
 game_font = pygame.font.Font(None, 24) 
 def draw_game_ui():
@@ -256,12 +273,22 @@ def draw_report_ui():
     pygame.draw.rect(screen, white, score_rect.inflate(20, 10), 2)
     screen.blit(score_text, score_rect)
 
+    try_again_text = game_font.render("Press space to try again",True,white)
+    try_again_rect = try_again_text.get_rect()
+    try_again_rect.center = (width // 2, height // 2)
+    screen.blit(try_again_text, try_again_rect)
 
-game_status = "Playing"
+def try_again():
+
+    global game_status,game_score, player, width, height
+
+    game_status = "Playing"
+    game_score = 0
+    player.retry(width, height)
 
 while running:
 
-    print(game_status)
+    # print(game_status)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -269,6 +296,9 @@ while running:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 running = False
+            if event.key == pygame.K_SPACE:
+                if game_status == "End":
+                    try_again()
 
     screen.fill(black)  # Clear screen with black
 

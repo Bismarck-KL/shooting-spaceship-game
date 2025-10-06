@@ -24,6 +24,7 @@ green = (0, 255, 0)  # Green
 brown = (139, 69, 19)  # Brown
 red = (255, 0, 0)  # Red
 yellow = (255, 255, 0)  # Yellow
+star_color = (128,128,128)
 
 def random_star_speed():
     return random.uniform(1, 30)
@@ -43,7 +44,7 @@ def draw_star():
 
     # Draw the stars on the screen
     for x, y, _ in star_particles:
-        pygame.draw.circle(screen, white, (int(x), int(y)), random.randint(1, 3))  # For radius, using a small random size
+        pygame.draw.circle(screen, star_color, (int(x), int(y)), random.randint(1, 3))  # For radius, using a small random size
 
 # Player class
 class Player(pygame.sprite.Sprite):
@@ -209,12 +210,11 @@ while running:
                 stone = player_stone_hit[0]
                 stone.reset_position()
                 player.set_health_point(-1)
+            all_sprites.draw(screen)  # Draw all sprites
             draw_game_ui()
         case "End":
             draw_report_ui()
 
-
-    all_sprites.draw(screen)  # Draw all sprites
     pygame.display.flip()  # Update the display
     clock.tick(frame_per_seconds)  # Maintain 60 FPS
 

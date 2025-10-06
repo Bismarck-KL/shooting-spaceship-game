@@ -16,11 +16,7 @@ The Spaceship Game is a 2D arcade-style game developed using Pygame, where playe
 
 - Python 3.x
 - Required libraries:
-  - `requests`
-  - `lxml`
-  - `numpy`
   - `pygame`
-  - `python-dotenv`
 
 ## Installation
 
@@ -42,21 +38,22 @@ The Spaceship Game is a 2D arcade-style game developed using Pygame, where playe
   1. Ensure you are in the project directory with the virtual environment activated.
   2. Run the application:
      ```sh
-     python main.py     
+     python main.py
+     ```
   3. Use the following controls:
-     - Arrow Keys: Control the spaceship movenment.
+    - Arrow Keys: Control the spaceship movenment.
     - Space Key: Retry ater the game end.
-     - Escape Key: Exit the application.
+    - Escape Key: Exit the application.
 
 ## File Structure
 
-shooting-spaceship-game/
-├── main.py                 # Main application file
-├── loading_screen.py       # Loading screen file
-├── requirements.txt        # Python dependencies
-├── assets/                 # Asset folder
-    ├── image               # Image folder
-    ├── sfx                 # Sound effect folder
+    shooting-spaceship-game/
+    ├── main.py                 # Main application file
+    ├── loading_screen.py       # Loading screen file
+    ├── requirements.txt        # Python dependencies
+    ├── assets/                 # Asset folder
+        ├── image               # Image folder
+        ├── sfx                 # Sound effect folder
 
 ## Dependencies
 

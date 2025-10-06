@@ -11,6 +11,7 @@ running = True
 frame_per_seconds = 60
 
 # Game data
+game_status = "Pending"
 game_score = 0
 
 # Initialize pygame
@@ -27,6 +28,7 @@ yellow = (255, 255, 0)  # Yellow
 
 # Player class
 class Player(pygame.sprite.Sprite):
+
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((30, 40))
@@ -68,7 +70,11 @@ class Player(pygame.sprite.Sprite):
         player_bullets.add(bullet)  
 
     def set_health_point(self,point):
+        global game_status
         self.health_point+=point
+        if self.health_point <=0:
+            game_status = "End"
+
 
 # Stone class 
 class Stone(pygame.sprite.Sprite):
@@ -130,6 +136,11 @@ for _ in range(8):
 
 game_font = pygame.font.Font(None, 24) 
 def draw_game_ui():
+    
+    # print("def draw_game_ui():")
+
+    global game_status
+
     player_health_text  = game_font.render(f"{player.health_point}", True, white)
     player_health_rect = player_health_text.get_rect(topleft = (20, 20))
     pygame.draw.rect(screen, white, player_health_rect.inflate(20, 10), 2)
@@ -149,6 +160,11 @@ def draw_game_ui():
     pygame.draw.rect(screen, red, stone_rect.inflate(20, 10), 2)
     screen.blit(stone_text, stone_rect)
 
+def draw_report_ui():
+    print("draw_report_ui")
+
+game_status = "Playing"
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -157,29 +173,29 @@ while running:
             if event.key == pygame.K_ESCAPE:
                 running = False
 
-    all_sprites.update()  # Update all sprites
-    stone_playerbullet_hit = pygame.sprite.groupcollide(stones, player_bullets, False, False)  # Check for collisions between stones and player bullets
-    if stone_playerbullet_hit:
-        for stone in stone_playerbullet_hit:
-            # add score with the stone size
-            game_score += stone.radius
-            stone.reset_position()
-
-    player_stone_hit = pygame.sprite.spritecollide(player, stones, False)  # Check for collisions between player and stones
-    if player_stone_hit:
-        # disable the stone
-        stone = player_stone_hit[0]
-        stone.reset_position()
-        player.set_health_point(-1)
-        
-
-
     screen.fill(black)  # Clear screen with black
+
+    match game_status:
+        case "Playing":
+            all_sprites.update()  # Update all sprites
+            stone_playerbullet_hit = pygame.sprite.groupcollide(stones, player_bullets, False, False)  # Check for collisions between stones and player bullets
+            if stone_playerbullet_hit:
+                for stone in stone_playerbullet_hit:
+                    # add score with the stone size
+                    game_score += stone.radius
+                    stone.reset_position()
+            player_stone_hit = pygame.sprite.spritecollide(player, stones, False)  # Check for collisions between player and stones
+            if player_stone_hit:
+                # disable the stone
+                stone = player_stone_hit[0]
+                stone.reset_position()
+                player.set_health_point(-1)
+            draw_game_ui()
+        case "End":
+            draw_report_ui()
+
+
     all_sprites.draw(screen)  # Draw all sprites
-
-    # draw game UI
-    draw_game_ui() 
-
     pygame.display.flip()  # Update the display
     clock.tick(frame_per_seconds)  # Maintain 60 FPS
 

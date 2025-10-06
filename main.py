@@ -94,13 +94,6 @@ class Player(pygame.sprite.Sprite):
 
         self.particles = pygame.sprite.Group()
 
-    def retry(self, width, height):
-        """Reset player attributes and position."""
-        self.health_point = 3
-        self.speed = 4
-        self.shooting_speed = 200  # Reset shooting speed
-        self.rect.center = (width // 2, height // 2)  # Reset position to center
-
     def update(self):
         """Update player state."""
         self.handle_movement()
@@ -280,11 +273,32 @@ def draw_report_ui():
 
 def try_again():
 
-    global game_status,game_score, player, width, height
+    global game_status, game_score, player, stones, player_bullets
+
+    # Remove old stones
+    for stone in stones:
+        stone.kill()  # Remove stone from all groups
+    # Remove old bullets
+    for bullet in player_bullets:
+        bullet.kill()  # Remove bullet from all groups
+    stones.empty()
+    player_bullets.empty()
+    player.kill()
+    
+
+    stones = pygame.sprite.Group()
+    player_bullets = pygame.sprite.Group()
+    player = Player(spaceship_img, width, height)
+    all_sprites.add(player)
+    for _ in range(8):
+        stone = Stone()
+        all_sprites.add(stone)
+        stones.add(stone)
 
     game_status = "Playing"
     game_score = 0
-    player.retry(width, height)
+
+
 
 while running:
 

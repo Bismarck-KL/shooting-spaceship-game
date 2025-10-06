@@ -41,9 +41,9 @@ The Spaceship Game is a 2D arcade-style game developed using Pygame, where playe
      python main.py
      ```
   3. Use the following controls:
-    - Arrow Keys: Control the spaceship movenment.
-    - Space Key: Retry ater the game end.
-    - Escape Key: Exit the application.
+     - Arrow Keys: Control the spaceship movenment.
+     - Space Key: Retry ater the game end.
+     - Escape Key: Exit the application.
 
 ## File Structure
 

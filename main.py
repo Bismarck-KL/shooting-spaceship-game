@@ -1,5 +1,6 @@
 import pygame 
 import random
+import os
 
 # Set up display
 width, height = 800, 600
@@ -16,6 +17,12 @@ game_score = 0
 
 # Initialize pygame
 pygame.init()
+
+# image
+try:
+    spaceship_img = pygame.image.load(os.path.join("assets/images/","spaceship.png")).convert()
+except pygame.error as e:
+    print(f"Error loading spaceship image file: {e}")
 
 # Colors
 white = (255,255,255)
@@ -48,71 +55,83 @@ def draw_star():
 
 # Player class
 class Player(pygame.sprite.Sprite):
-
-    def __init__(self):
+    def __init__(self, spaceship_img, width, height, speed=4, shooting_speed=200):
         super().__init__()
-        self.image = pygame.Surface((30, 40))
-        self.original_color = green
-        self.image.fill(self.original_color)  # Green spaceship
-        self.rect = self.image.get_rect()
-        self.rect.center = (width // 2, height // 2)
-        self.speed = 4
-        self.shooting_speed = 200  # Shooting speed in milliseconds
+        
+        # Load and scale the spaceship image
+        self.image = pygame.transform.scale(spaceship_img, (50, 50))
+        self.image.set_colorkey(white)  # Set white as the transparent color
+        
+        self.rect = self.image.get_rect(center=(width // 2, height // 2))
+        
+        # Player attributes
+        self.speed = speed
+        self.shooting_speed = shooting_speed  # Shooting speed in milliseconds
         self.last_shot_time = 0
         self.health_point = 3
+        
+        # Flashing attributes
         self.flashing = False  # Track if flashing is active
         self.flash_start_time = 0  # Track when the flash started
 
     def update(self):
+        self.handle_movement()
+        self.handle_shooting()
+        self.handle_flashing()
+
+    def handle_movement(self):
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_a]:
+        if keys[pygame.K_a]:  # Move left
             self.rect.x -= self.speed
             if self.rect.left < 0:
                 self.rect.left = 0
-        if keys[pygame.K_d]:
-            self.rect.x +=   self.speed
+        if keys[pygame.K_d]:  # Move right
+            self.rect.x += self.speed
             if self.rect.right > width:
                 self.rect.right = width
-        if keys[pygame.K_w]:
+        if keys[pygame.K_w]:  # Move up
             self.rect.y -= self.speed
             if self.rect.top < 0:
-                self.rect.top = 0   
-        if keys[pygame.K_s]:
+                self.rect.top = 0
+        if keys[pygame.K_s]:  # Move down
             self.rect.y += self.speed
             if self.rect.bottom > height:
                 self.rect.bottom = height
 
+    def handle_shooting(self):
         current_time = pygame.time.get_ticks()
         if current_time - self.last_shot_time >= self.shooting_speed:
             self.last_shot_time = current_time  # Update the last shot time
             self.shoot()
 
-        # Handle flashing effect
+    def handle_flashing(self):
+        current_time = pygame.time.get_ticks()
         if self.flashing:
-            if current_time - self.flash_start_time < 750:
-                if (current_time // 5) % 2 == 0: 
+            if current_time - self.flash_start_time < 750:  # Flashing duration
+                if (current_time // 100) % 2 == 0:  # Flash every 100 ms
                     self.image.fill((255, 255, 255))  # Flash white
                 else:
-                    self.image.fill(self.original_color)  # Back to original color
+                    self.image = pygame.transform.scale(spaceship_img, (50, 50))  # Reset to original
+                    self.image.set_colorkey(white)
             else:
                 self.flashing = False  # Stop flashing
-                self.image.fill(self.original_color)  # Ensure it resets to original color
+                self.image = pygame.transform.scale(spaceship_img, (50, 50))  # Ensure it resets to original
+                self.image.set_colorkey(white)
 
     def shoot(self):
         bullet = Bullet(self.rect.centerx, self.rect.top, 'player')
         all_sprites.add(bullet)
-        player_bullets.add(bullet)  
+        player_bullets.add(bullet)
 
-    def set_health_point(self,point):
+    def set_health_point(self, point):
         global game_status
-        self.health_point+=point
-        if self.health_point <=0:
+        self.health_point += point
+        if self.health_point <= 0:
             game_status = "End"
 
     def flash_white(self):
         self.flashing = True
         self.flash_start_time = pygame.time.get_ticks()
-
 # Stone class 
 class Stone(pygame.sprite.Sprite):
     def reset_position(self):
@@ -164,7 +183,7 @@ class Bullet(pygame.sprite.Sprite):
 all_sprites = pygame.sprite.Group()
 stones = pygame.sprite.Group()
 player_bullets = pygame.sprite.Group()
-player = Player()
+player = Player(spaceship_img, width, height)
 all_sprites.add(player)
 for _ in range(8):
     stone = Stone()
@@ -208,6 +227,9 @@ def draw_report_ui():
 game_status = "Playing"
 
 while running:
+
+    print(game_status)
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False

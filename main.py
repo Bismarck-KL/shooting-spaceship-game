@@ -32,6 +32,15 @@ def draw_game_ui():
     pygame.draw.rect(screen, white, score_rect.inflate(20, 10), 2)
     screen.blit(score_text, score_rect)
 
+
+    stone_text  = game_font.render(f"{len(stones):.2f}", True, white)
+    stone_rect = stone_text.get_rect()
+    stone_rect.topright = (width - 20, 20) 
+    pygame.draw.rect(screen, red, stone_rect.inflate(20, 10), 2)
+    screen.blit(stone_text, stone_rect)
+
+
+
 # Player class
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -137,24 +146,21 @@ while running:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 running = False
-            # elif event.key == pygame.K_SPACE:
-            #     player.shoot()  # Player shoots a bullet
 
     all_sprites.update()  # Update all sprites
-    stone_playerbullet_hit = pygame.sprite.groupcollide(stones, player_bullets, True, True)  # Check for collisions between stones and player bullets
+    stone_playerbullet_hit = pygame.sprite.groupcollide(stones, player_bullets, False, False)  # Check for collisions between stones and player bullets
     if stone_playerbullet_hit:
         for stone in stone_playerbullet_hit:
             # add score with the stone size
             game_score += stone.radius
-            stone = Stone()
-            all_sprites.add(stone)
-            stones.add(stone)
+            stone.reset_position()
 
     palyer_stone_hit = pygame.sprite.spritecollide(player, stones, False)  # Check for collisions between player and stones
     if palyer_stone_hit:
         # disable the stone
         stone = palyer_stone_hit[0]
-        stone.kill()
+        stone.reset_position()
+        
 
 
     screen.fill(black)  # Clear screen with black

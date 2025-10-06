@@ -69,7 +69,8 @@ The Spaceship Game is a 2D arcade-style game developed using Pygame, where playe
 
 - **Images and Assets**: Some images and background assets were sourced are used under their respective licenses.
     - https://www.vecteezy.com/vector-art/49433251-pixel-art-space-rocket-illustration
-- **Tutorials**: This project was developed following tutorials from YouTube, particularly those by [Youtube](https://www.youtube.com/watch?v=61eX0bFAsYs)GrandmaCan -我阿嬤都會. 
+- **Tutorials**: This project was developed following tutorials from YouTube, particularly those by [GrandmaCan -我阿嬤都會](https://youtu.be/61eX0bFAsYs?si=k2UWQ6V_wNKaspwT). 
+
 Special thanks to them for their helpful guidance.
 
 

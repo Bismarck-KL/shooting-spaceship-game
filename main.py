@@ -10,15 +10,27 @@ running = True
 
 frame_per_seconds = 60
 
+# Game data
+game_score = 0
+
 # Initialize pygame
 pygame.init()
 
 # Colors
+white = (255,255,255)
 black = (0, 0, 0)  # Black
 green = (0, 255, 0)  # Green
 brown = (139, 69, 19)  # Brown
 red = (255, 0, 0)  # Red
 yellow = (255, 255, 0)  # Yellow
+
+# Font setup
+game_font = pygame.font.Font(None, 24) 
+def draw_game_ui():
+    score_text  = game_font.render(f"{game_score:.2f}", True, white)
+    score_rect = score_text.get_rect(topleft = (20, 20))
+    pygame.draw.rect(screen, white, score_rect.inflate(20, 10), 2)
+    screen.blit(score_text, score_rect)
 
 # Player class
 class Player(pygame.sprite.Sprite):
@@ -131,7 +143,9 @@ while running:
     all_sprites.update()  # Update all sprites
     stone_playerbullet_hit = pygame.sprite.groupcollide(stones, player_bullets, True, True)  # Check for collisions between stones and player bullets
     if stone_playerbullet_hit:
-        for _ in stone_playerbullet_hit:
+        for stone in stone_playerbullet_hit:
+            # add score with the stone size
+            game_score += stone.radius
             stone = Stone()
             all_sprites.add(stone)
             stones.add(stone)
@@ -145,6 +159,10 @@ while running:
 
     screen.fill(black)  # Clear screen with black
     all_sprites.draw(screen)  # Draw all sprites
+
+    # draw game UI
+    draw_game_ui() 
+
     pygame.display.flip()  # Update the display
     clock.tick(frame_per_seconds)  # Maintain 60 FPS
 

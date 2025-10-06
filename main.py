@@ -29,25 +29,32 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (width // 2, height // 2)
         self.speed = 4
+        self.shooting_speed = 200  # Shooting speed in milliseconds
+        self.last_shot_time = 0
 
     def update(self):
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT]:
+        if keys[pygame.K_a]:
             self.rect.x -= self.speed
             if self.rect.left < 0:
                 self.rect.left = 0
-        if keys[pygame.K_RIGHT]:
+        if keys[pygame.K_d]:
             self.rect.x +=   self.speed
             if self.rect.right > width:
                 self.rect.right = width
-        if keys[pygame.K_UP]:
+        if keys[pygame.K_w]:
             self.rect.y -= self.speed
             if self.rect.top < 0:
                 self.rect.top = 0   
-        if keys[pygame.K_DOWN]:
+        if keys[pygame.K_s]:
             self.rect.y += self.speed
             if self.rect.bottom > height:
                 self.rect.bottom = height
+
+        current_time = pygame.time.get_ticks()
+        if current_time - self.last_shot_time >= self.shooting_speed:
+            self.last_shot_time = current_time  # Update the last shot time
+            self.shoot()
 
     def shoot(self):
         bullet = Bullet(self.rect.centerx, self.rect.top, 'player')

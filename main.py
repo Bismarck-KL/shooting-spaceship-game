@@ -52,13 +52,16 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((30, 40))
-        self.image.fill(green)  # Green spaceship
+        self.original_color = green
+        self.image.fill(self.original_color)  # Green spaceship
         self.rect = self.image.get_rect()
         self.rect.center = (width // 2, height // 2)
         self.speed = 4
         self.shooting_speed = 200  # Shooting speed in milliseconds
         self.last_shot_time = 0
         self.health_point = 3
+        self.flashing = False  # Track if flashing is active
+        self.flash_start_time = 0  # Track when the flash started
 
     def update(self):
         keys = pygame.key.get_pressed()
@@ -84,6 +87,17 @@ class Player(pygame.sprite.Sprite):
             self.last_shot_time = current_time  # Update the last shot time
             self.shoot()
 
+        # Handle flashing effect
+        if self.flashing:
+            if current_time - self.flash_start_time < 750:
+                if (current_time // 5) % 2 == 0: 
+                    self.image.fill((255, 255, 255))  # Flash white
+                else:
+                    self.image.fill(self.original_color)  # Back to original color
+            else:
+                self.flashing = False  # Stop flashing
+                self.image.fill(self.original_color)  # Ensure it resets to original color
+
     def shoot(self):
         bullet = Bullet(self.rect.centerx, self.rect.top, 'player')
         all_sprites.add(bullet)
@@ -94,6 +108,10 @@ class Player(pygame.sprite.Sprite):
         self.health_point+=point
         if self.health_point <=0:
             game_status = "End"
+
+    def flash_white(self):
+        self.flashing = True
+        self.flash_start_time = pygame.time.get_ticks()
 
 # Stone class 
 class Stone(pygame.sprite.Sprite):
@@ -140,6 +158,8 @@ class Bullet(pygame.sprite.Sprite):
         if self.rect.bottom < 0 or self.rect.top > height:
             self.kill()  # Remove the bullet if it goes off-screen
 
+
+
  # Create sprite groups
 all_sprites = pygame.sprite.Group()
 stones = pygame.sprite.Group()
@@ -177,6 +197,13 @@ def draw_game_ui():
 
 def draw_report_ui():
     # To-Do draw report
+    score_text = game_font.render(f"{game_score:.2f}", True, white)
+    score_rect = score_text.get_rect()
+    score_rect.centerx = width // 2  # Center horizontally
+    score_rect.top = 20
+    pygame.draw.rect(screen, white, score_rect.inflate(20, 10), 2)
+    screen.blit(score_text, score_rect)
+
 
 game_status = "Playing"
 
@@ -206,6 +233,8 @@ while running:
                 stone = player_stone_hit[0]
                 stone.reset_position()
                 player.set_health_point(-1)
+                player.flash_white()
+
             all_sprites.draw(screen)  # Draw all sprites
             draw_game_ui()
         case "End":

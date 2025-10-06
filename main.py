@@ -125,8 +125,8 @@ while running:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 running = False
-            elif event.key == pygame.K_SPACE:
-                player.shoot()  # Player shoots a bullet
+            # elif event.key == pygame.K_SPACE:
+            #     player.shoot()  # Player shoots a bullet
 
     all_sprites.update()  # Update all sprites
     stone_playerbullet_hit = pygame.sprite.groupcollide(stones, player_bullets, True, True)  # Check for collisions between stones and player bullets

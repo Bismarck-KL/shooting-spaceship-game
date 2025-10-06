@@ -140,9 +140,7 @@ class Bullet(pygame.sprite.Sprite):
         if self.rect.bottom < 0 or self.rect.top > height:
             self.kill()  # Remove the bullet if it goes off-screen
 
- # Font setup
-
-    # Create sprite groups
+ # Create sprite groups
 all_sprites = pygame.sprite.Group()
 stones = pygame.sprite.Group()
 player_bullets = pygame.sprite.Group()
@@ -153,11 +151,9 @@ for _ in range(8):
     all_sprites.add(stone)
     stones.add(stone)
 
+# Font setup
 game_font = pygame.font.Font(None, 24) 
 def draw_game_ui():
-    
-    # print("def draw_game_ui():")
-
     global game_status
 
     player_health_text  = game_font.render(f"{player.health_point}", True, white)
@@ -180,7 +176,7 @@ def draw_game_ui():
     screen.blit(stone_text, stone_rect)
 
 def draw_report_ui():
-    print("draw_report_ui")
+    # To-Do draw report
 
 game_status = "Playing"
 

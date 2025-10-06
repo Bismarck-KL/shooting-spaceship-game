@@ -24,22 +24,6 @@ brown = (139, 69, 19)  # Brown
 red = (255, 0, 0)  # Red
 yellow = (255, 255, 0)  # Yellow
 
-# Font setup
-game_font = pygame.font.Font(None, 24) 
-def draw_game_ui():
-    score_text  = game_font.render(f"{game_score:.2f}", True, white)
-    score_rect = score_text.get_rect(topleft = (20, 20))
-    pygame.draw.rect(screen, white, score_rect.inflate(20, 10), 2)
-    screen.blit(score_text, score_rect)
-
-
-    stone_text  = game_font.render(f"{len(stones):.2f}", True, white)
-    stone_rect = stone_text.get_rect()
-    stone_rect.topright = (width - 20, 20) 
-    pygame.draw.rect(screen, red, stone_rect.inflate(20, 10), 2)
-    screen.blit(stone_text, stone_rect)
-
-
 
 # Player class
 class Player(pygame.sprite.Sprite):
@@ -52,6 +36,7 @@ class Player(pygame.sprite.Sprite):
         self.speed = 4
         self.shooting_speed = 200  # Shooting speed in milliseconds
         self.last_shot_time = 0
+        self.health_point = 3
 
     def update(self):
         keys = pygame.key.get_pressed()
@@ -81,6 +66,9 @@ class Player(pygame.sprite.Sprite):
         bullet = Bullet(self.rect.centerx, self.rect.top, 'player')
         all_sprites.add(bullet)
         player_bullets.add(bullet)  
+
+    def set_health_point(self,point):
+        self.health_point+=point
 
 # Stone class 
 class Stone(pygame.sprite.Sprite):
@@ -126,9 +114,10 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.y += self.speedy
         if self.rect.bottom < 0 or self.rect.top > height:
             self.kill()  # Remove the bullet if it goes off-screen
-        
 
-# Create sprite groups
+ # Font setup
+
+    # Create sprite groups
 all_sprites = pygame.sprite.Group()
 stones = pygame.sprite.Group()
 player_bullets = pygame.sprite.Group()
@@ -138,6 +127,27 @@ for _ in range(8):
     stone = Stone()
     all_sprites.add(stone)
     stones.add(stone)
+
+game_font = pygame.font.Font(None, 24) 
+def draw_game_ui():
+    player_health_text  = game_font.render(f"{player.health_point}", True, white)
+    player_health_rect = player_health_text.get_rect(topleft = (20, 20))
+    pygame.draw.rect(screen, white, player_health_rect.inflate(20, 10), 2)
+    screen.blit(player_health_text, player_health_rect)
+
+    score_text = game_font.render(f"{game_score:.2f}", True, white)
+    score_rect = score_text.get_rect()
+    score_rect.centerx = width // 2  # Center horizontally
+    score_rect.top = 20
+    pygame.draw.rect(screen, white, score_rect.inflate(20, 10), 2)
+    screen.blit(score_text, score_rect)
+
+
+    stone_text  = game_font.render(f"{len(stones):.2f}", True, white)
+    stone_rect = stone_text.get_rect()
+    stone_rect.topright = (width - 20, 20)   
+    pygame.draw.rect(screen, red, stone_rect.inflate(20, 10), 2)
+    screen.blit(stone_text, stone_rect)
 
 while running:
     for event in pygame.event.get():
@@ -155,11 +165,12 @@ while running:
             game_score += stone.radius
             stone.reset_position()
 
-    palyer_stone_hit = pygame.sprite.spritecollide(player, stones, False)  # Check for collisions between player and stones
-    if palyer_stone_hit:
+    player_stone_hit = pygame.sprite.spritecollide(player, stones, False)  # Check for collisions between player and stones
+    if player_stone_hit:
         # disable the stone
-        stone = palyer_stone_hit[0]
+        stone = player_stone_hit[0]
         stone.reset_position()
+        player.set_health_point(-1)
         
 
 

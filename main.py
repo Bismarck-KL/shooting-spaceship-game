@@ -92,6 +92,8 @@ class Player(pygame.sprite.Sprite):
         self.flashing = False  # Track if flashing is active
         self.flash_start_time = 0  # Track when the flash started
 
+        self.shield = None
+
         self.particles = pygame.sprite.Group()
 
     def update(self):
@@ -101,6 +103,7 @@ class Player(pygame.sprite.Sprite):
         self.handle_flashing()
         self.generate_particles()  # Generate particles
         self.particles.update()  # Update particles
+        
 
     def handle_movement(self):
         """Handle player movement based on key presses."""
@@ -171,6 +174,30 @@ class Player(pygame.sprite.Sprite):
             particle = Particle(self.rect.centerx, self.rect.bottom)
             self.particles.add(particle)
 
+    def activate_shield(self):
+        """Activate a shield around the player."""
+        if self.shield == None:
+            self.shield = Shield(self)
+            all_sprites.add(self.shield)
+            palyer_shield.add(self.shield)
+
+# Shiled class
+class Shield(pygame.sprite.Sprite):
+    def __init__(self, player):
+        """Initialize the Shield instance."""
+        super().__init__()
+        self.radius = 25
+        self.image = pygame.Surface((self.radius * 2, self.radius * 2), pygame.SRCALPHA)
+        pygame.draw.circle(self.image, (255, 0, 0, 95), (self.radius, self.radius), self.radius)  # Draw the circle
+        self.rect = self.image.get_rect(center=player.rect.center)  # Set initial position to match the player
+        self.player = player  # Reference to the player
+
+
+    def update(self):
+        """Update the shield's position to follow the player."""
+        self.rect.center = self.player.rect.center  # Keep the shield centered on the player
+
+
 # Stone class 
 class Stone(pygame.sprite.Sprite):
     def reset_position(self):
@@ -222,6 +249,7 @@ class Bullet(pygame.sprite.Sprite):
 all_sprites = pygame.sprite.Group()
 stones = pygame.sprite.Group()
 player_bullets = pygame.sprite.Group()
+palyer_shield = pygame.sprite.Group()
 player = Player(spaceship_img, width, height)
 all_sprites.add(player)
 for _ in range(8):
@@ -333,6 +361,7 @@ while running:
                 stone.reset_position()
                 player.set_health_point(-1)
                 player.flash_white()
+                # player.activate_shield()
 
             player.particles.draw(screen)
             all_sprites.draw(screen)  # Draw all sprites

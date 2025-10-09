@@ -93,6 +93,7 @@ class Player(pygame.sprite.Sprite):
         self.flash_start_time = 0  # Track when the flash started
 
         self.shield = None
+        self.activate_shield()
 
         self.particles = pygame.sprite.Group()
 
@@ -181,14 +182,21 @@ class Player(pygame.sprite.Sprite):
         if self.shield == None:
             self.shield = Shield(self)
             all_sprites.add(self.shield)
-            palyer_shield.add(self.shield)
+            player_shield.add(self.shield)
+
+    def deactivate_shield(self):
+        """Deactivate a shield around the player."""
+        if not self.shield == None:
+            all_sprites.remove(self.shield)
+            player_shield.remove(self.shield)
+            self.shield = None
 
 # Shiled class
 class Shield(pygame.sprite.Sprite):
     def __init__(self, player):
         """Initialize the Shield instance."""
         super().__init__()
-        self.radius = 25
+        self.radius = 50
         self.image = pygame.Surface((self.radius * 2, self.radius * 2), pygame.SRCALPHA)
         pygame.draw.circle(self.image, (255, 0, 0, 95), (self.radius, self.radius), self.radius)  # Draw the circle
         self.rect = self.image.get_rect(center=player.rect.center)  # Set initial position to match the player
@@ -251,7 +259,7 @@ class Bullet(pygame.sprite.Sprite):
 all_sprites = pygame.sprite.Group()
 stones = pygame.sprite.Group()
 player_bullets = pygame.sprite.Group()
-palyer_shield = pygame.sprite.Group()
+player_shield = pygame.sprite.Group()
 player = Player(spaceship_img, width, height)
 all_sprites.add(player)
 for _ in range(8):
@@ -363,7 +371,12 @@ while running:
                 stone.reset_position()
                 player.set_health_point(-1)
                 player.flash_white()
-                # player.activate_shield()
+            shield_stone_hit = pygame.sprite.groupcollide(stones, player_shield, False,False)
+            if shield_stone_hit:
+                for stone in shield_stone_hit:
+                    # stone = shield_stone_hit[0]
+                    stone.reset_position()
+                    player.deactivate_shield()
 
             
             all_sprites.draw(screen)  # Draw all sprites

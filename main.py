@@ -98,12 +98,14 @@ class Player(pygame.sprite.Sprite):
 
     def update(self):
         """Update player state."""
+        global screen
+
         self.handle_movement()
         self.handle_shooting()
         self.handle_flashing()
         self.generate_particles()  # Generate particles
         self.particles.update()  # Update particles
-        
+        self.particles.draw(screen)
 
     def handle_movement(self):
         """Handle player movement based on key presses."""
@@ -363,7 +365,7 @@ while running:
                 player.flash_white()
                 # player.activate_shield()
 
-            player.particles.draw(screen)
+            
             all_sprites.draw(screen)  # Draw all sprites
             draw_game_ui()
         case "End":

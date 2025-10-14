@@ -24,11 +24,13 @@ yellow = (255, 255, 0)  # Yellow
 star_color = (128,128,128)
 
 # image
+# Load spaceship image
 try:
     spaceship_img = pygame.image.load(os.path.join("assets/images/","spaceship.png")).convert()
 except pygame.error as e:
     print(f"Error loading spaceship image file: {e}")
 
+# Load stone images
 stone_img = [None, None]
 try:
     stone_img[0] = pygame.image.load(os.path.join("assets/images/","rock3.png")).convert()
@@ -36,7 +38,7 @@ try:
 except pygame.error as e:
     print(f"Error loading stone image file: {e}")   
 
-
+# Explosion animation
 try:
     expl_anim = {}
     expl_anim['lg'] = []
@@ -100,8 +102,13 @@ class Player(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(spaceship_img, (50, 50))
         self.image.set_colorkey((255, 255, 255))  # Set white as the transparent color
         
-        self.rect = self.image.get_rect(center=(width // 2, height // 2))
-        
+        # Set the initial position of the spaceship as the bottom center of the screen
+        self.rect = self.image.get_rect()
+        if player_id == 0:  # Player 1
+            self.rect.center = (width // 4, height - 60)
+        else:  # Player 2
+            self.rect.center = (3 * width // 4, height - 60)
+
         # Player attributes
         self.player_id = player_id
         self.speed = speed
@@ -207,7 +214,6 @@ class Player(pygame.sprite.Sprite):
             self.health_point = 0
             self.kill()
         check_health()
-
 
     def flash_white(self):
         """Trigger white flash effect."""

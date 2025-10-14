@@ -1,6 +1,8 @@
 import pygame 
 import random
 import os
+import sys
+import subprocess
 
 # Set up display
 width, height = 800, 600
@@ -440,9 +442,12 @@ while running:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 running = False
-            if event.key == pygame.K_SPACE:
-                if game_status == "End":
+            if game_status == "End":
+                if event.key == pygame.K_SPACE:
                     try_again()
+                elif event.key == pygame.K_BACKSPACE:
+                    subprocess.Popen(["python", "start.py"])  # Start main game script
+                    running = False  # Close current script
 
     screen.fill(black)  # Clear screen with black
 
@@ -493,3 +498,4 @@ while running:
 # Clean up and exit
 pygame.mixer.quit()
 pygame.quit()
+sys.exit() 

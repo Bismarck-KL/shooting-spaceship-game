@@ -20,6 +20,13 @@ try:
 except pygame.error as e:
     print(f"Error loading spaceship image file: {e}")
 
+stone_img = [None, None]
+try:
+    stone_img[0] = pygame.image.load(os.path.join("assets/images/","rock3.png")).convert()
+    stone_img[1] = pygame.image.load(os.path.join("assets/images/","rock6.png")).convert()
+except pygame.error as e:
+    print(f"Error loading stone image file: {e}")   
+
 # Colors
 white = (255,255,255)
 black = (0, 0, 0)  # Black

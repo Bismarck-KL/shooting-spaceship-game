@@ -38,7 +38,7 @@ The Spaceship Game is a 2D arcade-style game developed using Pygame, where playe
   1. Ensure you are in the project directory with the virtual environment activated.
   2. Run the application:
      ```sh
-     python main.py
+     python start.py
      ```
   3. Use the following controls:
      - Arrow Keys: Control the spaceship movenment.
@@ -48,6 +48,7 @@ The Spaceship Game is a 2D arcade-style game developed using Pygame, where playe
 ## File Structure
 
     shooting-spaceship-game/
+    ├── start.py                # Start manu application file
     ├── main.py                 # Main application file
     ├── loading_screen.py       # Loading screen file
     ├── requirements.txt        # Python dependencies

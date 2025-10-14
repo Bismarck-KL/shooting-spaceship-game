@@ -225,19 +225,33 @@ class Stone(pygame.sprite.Sprite):
         self.speedx = random.randint(-2, 2)
     def __init__(self):
         super().__init__()
+        self.image_ori = random.choice(stone_img)
+        self.image_ori.set_colorkey(black)
+        self.image = self.image_ori.copy()
+        self.total_degree = 0
+        self.rot_degree = random.randrange(-3, 3)
         self.size = random.randint(20,100)
-        self.image = pygame.Surface((self.size, self.size))
-        self.image.fill(brown)  # Brown stone
+        # self.image = pygame.Surface((self.size, self.size))
+        # self.image.fill(brown)  # Brown stone
         self.rect = self.image.get_rect()
         self.radius = self.rect.width * 0.85 /2
         # pygame.draw.circle(self.image,red,self.rect.center,self.radius) #Debug rendering
         self.reset_position()    
 
     def update(self):
+        self.rotate()
         self.rect.x += self.speedx
         self.rect.y += self.speedy
         if self.rect.top > height:
             self.reset_position() 
+
+    def rotate(self):   
+        self.total_degree += self.rot_degree
+        self.total_degree = self.total_degree % 360
+        self.image = pygame.transform.rotate(self.image_ori, self.total_degree)
+        center = self.rect.center
+        self.rect = self.image.get_rect()
+        self.rect.center = center
 
 # Bullet class
 class Bullet(pygame.sprite.Sprite):

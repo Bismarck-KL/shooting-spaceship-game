@@ -45,8 +45,7 @@ try:
         expl_img = pygame.image.load(os.path.join("assets/images/expl", f"expl{i}.png")).convert()
         expl_img.set_colorkey(black)
         expl_anim['lg'].append(pygame.transform.scale(expl_img, (75, 75)))
-        expl_anim['sm'].append(pygame.transform.scale(expl_img, (30, 30)))
-        
+        expl_anim['sm'].append(pygame.transform.scale(expl_img, (45,45)))
 except pygame.error as e:
     print(f"Error loading explosion image file: {e}")
 
@@ -228,6 +227,30 @@ class Shield(pygame.sprite.Sprite):
         """Update the shield's position to follow the player."""
         self.rect.center = self.player.rect.center  # Keep the shield centered on the player
 
+# Explosion class
+class Explosion(pygame.sprite.Sprite):
+    def __init__(self, center, size):
+        pygame.sprite.Sprite.__init__(self)
+        self.size = size
+        self.image = expl_anim[self.size][0]
+        self.rect = self.image.get_rect()
+        self.rect.center = center
+        self.frame = 0
+        self.last_update = pygame.time.get_ticks()
+        self.frame_rate = 50
+
+    def update(self):
+        now = pygame.time.get_ticks()
+        if now - self.last_update > self.frame_rate:
+            self.last_update = now
+            self.frame += 1
+            if self.frame == len(expl_anim[self.size]):
+                self.kill()
+            else:
+                self.image = expl_anim[self.size][self.frame]
+                center = self.rect.center
+                self.rect = self.image.get_rect()
+                self.rect.center = center
 
 # Stone class 
 class Stone(pygame.sprite.Sprite):
@@ -396,6 +419,9 @@ while running:
             stone_playerbullet_hit = pygame.sprite.groupcollide(stones, player_bullets, False, False)  # Check for collisions between stones and player bullets
             if stone_playerbullet_hit:
                 for stone in stone_playerbullet_hit:
+                    # show explosion
+                    expl = Explosion(stone.rect.center, 'sm')
+                    all_sprites.add(expl)
                     # add score with the stone size
                     game_score += stone.radius
                     stone.reset_position()
@@ -404,11 +430,17 @@ while running:
                 # disable the stone
                 stone = player_stone_hit[0]
                 stone.reset_position()
+                # show explosion
+                expl = Explosion(stone.rect.center, 'lg')
+                all_sprites.add(expl)
                 player.set_health_point(-1)
                 player.flash_white()
             shield_stone_hit = pygame.sprite.groupcollide(stones, player_shield, False,False)
             if shield_stone_hit:
                 for stone in shield_stone_hit:
+                    # show explosion
+                    expl = Explosion(stone.rect.center, 'sm')
+                    all_sprites.add(expl)
                     # stone = shield_stone_hit[0]
                     stone.reset_position()
                     player.deactivate_shield()

@@ -93,7 +93,7 @@ class Particle(pygame.sprite.Sprite):
 
 # Player class
 class Player(pygame.sprite.Sprite):
-    def __init__(self, spaceship_img, width, height, speed=4, shooting_speed=200):
+    def __init__(self, spaceship_img, width, height, player_id, speed=4, shooting_speed=200):
         super().__init__()
 
         # Load and scale the spaceship image
@@ -103,6 +103,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=(width // 2, height // 2))
         
         # Player attributes
+        self.player_id = player_id
         self.speed = speed
         self.shooting_speed = shooting_speed  # Shooting speed in milliseconds
         self.last_shot_time = 0
@@ -131,22 +132,41 @@ class Player(pygame.sprite.Sprite):
     def handle_movement(self):
         """Handle player movement based on key presses."""
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_a]:  # Move left
-            self.rect.x -= self.speed
-            if self.rect.left < 0:
-                self.rect.left = 0
-        if keys[pygame.K_d]:  # Move right
-            self.rect.x += self.speed
-            if self.rect.right > width:
-                self.rect.right = width
-        if keys[pygame.K_w]:  # Move up
-            self.rect.y -= self.speed
-            if self.rect.top < 0:
-                self.rect.top = 0
-        if keys[pygame.K_s]:  # Move down
-            self.rect.y += self.speed
-            if self.rect.bottom > height:
-                self.rect.bottom = height
+
+        if self.player_id == 0:  # Player 1 controls
+            if keys[pygame.K_a]:  # Move left
+                self.rect.x -= self.speed
+                if self.rect.left < 0:
+                    self.rect.left = 0
+            if keys[pygame.K_d]:  # Move right
+                self.rect.x += self.speed
+                if self.rect.right > width:
+                    self.rect.right = width
+            if keys[pygame.K_w]:  # Move up
+                self.rect.y -= self.speed
+                if self.rect.top < 0:
+                    self.rect.top = 0
+            if keys[pygame.K_s]:  # Move down
+                self.rect.y += self.speed
+                if self.rect.bottom > height:
+                    self.rect.bottom = height
+        else:  # Player 2 controls
+            if keys[pygame.K_LEFT]:  # Move left
+                self.rect.x -= self.speed
+                if self.rect.left < 0:
+                    self.rect.left = 0
+            if keys[pygame.K_RIGHT]:  # Move right
+                self.rect.x += self.speed
+                if self.rect.right > width:
+                    self.rect.right = width
+            if keys[pygame.K_UP]:  # Move up
+                self.rect.y -= self.speed
+                if self.rect.top < 0:
+                    self.rect.top = 0
+            if keys[pygame.K_DOWN]:  # Move down
+                self.rect.y += self.speed
+                if self.rect.bottom > height:
+                    self.rect.bottom = height
 
     def handle_shooting(self):
         """Handle shooting mechanics."""
@@ -184,7 +204,10 @@ class Player(pygame.sprite.Sprite):
         global game_status
         self.health_point += point
         if self.health_point <= 0:
-            game_status = "End"
+            self.health_point = 0
+            self.kill()
+        check_health()
+
 
     def flash_white(self):
         """Trigger white flash effect."""
@@ -314,12 +337,18 @@ class Bullet(pygame.sprite.Sprite):
 
 
  # Create sprite groups
+
 all_sprites = pygame.sprite.Group()
 stones = pygame.sprite.Group()
 player_bullets = pygame.sprite.Group()
 player_shield = pygame.sprite.Group()
-player = Player(spaceship_img, width, height)
-all_sprites.add(player)
+players_group = pygame.sprite.Group()
+player_1 = Player(spaceship_img, width, height, 0)
+player_2 = Player(spaceship_img, width, height, 1)
+players_group.add(player_1)
+players_group.add(player_2)
+all_sprites.add(players_group)
+ 
 for _ in range(8):
     stone = Stone()
     all_sprites.add(stone)
@@ -328,16 +357,25 @@ for _ in range(8):
 game_status = "Playing"
 game_score = 0
 
+def check_health():
+    if player_1.health_point <= 0 and player_2.health_point <= 0:
+        global game_status
+        game_status = "End"
 
 # Font setup
 game_font = pygame.font.Font(None, 24) 
 def draw_game_ui():
     global game_status
 
-    player_health_text  = game_font.render(f"{player.health_point}", True, white)
+    player_health_text  = game_font.render(f"{player_1.health_point}", True, white)
     player_health_rect = player_health_text.get_rect(topleft = (20, 20))
     pygame.draw.rect(screen, white, player_health_rect.inflate(20, 10), 2)
     screen.blit(player_health_text, player_health_rect)
+
+    player_2_health_text  = game_font.render(f"{player_2.health_point}", True, white)
+    player_2_health_rect = player_2_health_text.get_rect(topleft = (20, 50))
+    pygame.draw.rect(screen, white, player_2_health_rect.inflate(20, 10), 2)
+    screen.blit(player_2_health_text, player_2_health_rect)
 
     score_text = game_font.render(f"{game_score:.2f}", True, white)
     score_rect = score_text.get_rect()
@@ -369,7 +407,7 @@ def draw_report_ui():
 
 def try_again():
 
-    global game_status, game_score, player, stones, player_bullets
+    global game_status, game_score, player_1, player_2, stones, player_bullets, players_group
 
     # Remove old stones
     for stone in stones:
@@ -379,13 +417,19 @@ def try_again():
         bullet.kill()  # Remove bullet from all groups
     stones.empty()
     player_bullets.empty()
-    player.kill()
-    
+    if not player_1 == None:
+        player_1.kill()
+    if not player_2 == None:
+        player_2.kill()
 
-    stones = pygame.sprite.Group()
-    player_bullets = pygame.sprite.Group()
-    player = Player(spaceship_img, width, height)
-    all_sprites.add(player)
+    # stones = pygame.sprite.Group()
+    # player_bullets = pygame.sprite.Group()
+    # players_group = pygame.sprite.Group()
+    player_1 = Player(spaceship_img, width, height, 0)
+    player_2 = Player(spaceship_img, width, height, 1)
+    players_group.add(player_1)
+    players_group.add(player_2) 
+    all_sprites.add(players_group)
     for _ in range(8):
         stone = Stone()
         all_sprites.add(stone)
@@ -394,12 +438,9 @@ def try_again():
     game_status = "Playing"
     game_score = 0
 
-
-
 while running:
 
     # print(game_status)
-
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -425,25 +466,31 @@ while running:
                     # add score with the stone size
                     game_score += stone.radius
                     stone.reset_position()
-            player_stone_hit = pygame.sprite.spritecollide(player, stones, False)  # Check for collisions between player and stones
+
+            player_stone_hit = pygame.sprite.groupcollide(stones, players_group, False, False)
             if player_stone_hit:
-                # disable the stone
-                stone = player_stone_hit[0]
-                stone.reset_position()
-                # show explosion
-                expl = Explosion(stone.rect.center, 'lg')
-                all_sprites.add(expl)
-                player.set_health_point(-1)
-                player.flash_white()
+                for stone,players in player_stone_hit.items():
+                    stone.reset_position()
+                    # show explosion
+                    expl = Explosion(stone.rect.center, 'lg')
+                    all_sprites.add(expl)
+                    for player in players:
+                        player.set_health_point(-1)
+                        player.flash_white()   
+
             shield_stone_hit = pygame.sprite.groupcollide(stones, player_shield, False,False)
             if shield_stone_hit:
-                for stone in shield_stone_hit:
+                for stone,shields in shield_stone_hit.items():
                     # show explosion
                     expl = Explosion(stone.rect.center, 'sm')
                     all_sprites.add(expl)
-                    # stone = shield_stone_hit[0]
                     stone.reset_position()
-                    player.deactivate_shield()
+                    for shield in shields:
+                        shield.player.deactivate_shield()
+
+                
+
+
 
             
             all_sprites.draw(screen)  # Draw all sprites

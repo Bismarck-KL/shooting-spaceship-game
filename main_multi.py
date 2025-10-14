@@ -105,7 +105,9 @@ class Player(pygame.sprite.Sprite):
         # Set the initial position of the spaceship as the bottom center of the screen
         self.rect = self.image.get_rect()
         if player_id == 0:  # Player 1
-            self.rect.center = (width, height - 60)
+            self.rect.center = (width // 4, height - 60)
+        else:  # Player 2
+            self.rect.center = (3 * width // 4, height - 60)
 
         # Player attributes
         self.player_id = player_id
@@ -348,7 +350,9 @@ player_bullets = pygame.sprite.Group()
 player_shield = pygame.sprite.Group()
 players_group = pygame.sprite.Group()
 player_1 = Player(spaceship_img, width, height, 0)
+player_2 = Player(spaceship_img, width, height, 1)
 players_group.add(player_1)
+players_group.add(player_2)
 all_sprites.add(players_group)
  
 for _ in range(8):
@@ -360,7 +364,7 @@ game_status = "Playing"
 game_score = 0
 
 def check_health():
-    if player_1.health_point <= 0:
+    if player_1.health_point <= 0 and player_2.health_point <= 0:
         global game_status
         game_status = "End"
 
@@ -373,6 +377,11 @@ def draw_game_ui():
     player_health_rect = player_health_text.get_rect(topleft = (20, 20))
     pygame.draw.rect(screen, white, player_health_rect.inflate(20, 10), 2)
     screen.blit(player_health_text, player_health_rect)
+
+    player_2_health_text  = game_font.render(f"{player_2.health_point}", True, white)
+    player_2_health_rect = player_2_health_text.get_rect(topleft = (20, 50))
+    pygame.draw.rect(screen, white, player_2_health_rect.inflate(20, 10), 2)
+    screen.blit(player_2_health_text, player_2_health_rect)
 
     score_text = game_font.render(f"{game_score:.2f}", True, white)
     score_rect = score_text.get_rect()
@@ -404,7 +413,7 @@ def draw_report_ui():
 
 def try_again():
 
-    global game_status, game_score, player_1, stones, player_bullets, players_group
+    global game_status, game_score, player_1, player_2, stones, player_bullets, players_group
 
     # Remove old stones
     for stone in stones:
@@ -416,12 +425,16 @@ def try_again():
     player_bullets.empty()
     if not player_1 == None:
         player_1.kill()
+    if not player_2 == None:
+        player_2.kill()
 
     # stones = pygame.sprite.Group()
     # player_bullets = pygame.sprite.Group()
     # players_group = pygame.sprite.Group()
     player_1 = Player(spaceship_img, width, height, 0)
+    player_2 = Player(spaceship_img, width, height, 1)
     players_group.add(player_1)
+    players_group.add(player_2) 
     all_sprites.add(players_group)
     for _ in range(8):
         stone = Stone()
@@ -480,6 +493,11 @@ while running:
                     stone.reset_position()
                     for shield in shields:
                         shield.player.deactivate_shield()
+
+                
+
+
+
             
             all_sprites.draw(screen)  # Draw all sprites
             draw_game_ui()

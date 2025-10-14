@@ -397,9 +397,9 @@ def draw_report_ui():
     score_rect.centerx = width // 2  # Center horizontally
     score_rect.top = 20
     pygame.draw.rect(screen, white, score_rect.inflate(20, 10), 2)
-    screen.blit(score_text, score_rect)
+    screen.blit(score_text,     try_again_text = game_font.render("Press space to try again Backspace to return to menu",True,white)
+score_rect)
 
-    try_again_text = game_font.render("Press space to try again",True,white)
     try_again_rect = try_again_text.get_rect()
     try_again_rect.center = (width // 2, height // 2)
     screen.blit(try_again_text, try_again_rect)

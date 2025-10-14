@@ -14,6 +14,15 @@ frame_per_seconds = 60
 # Initialize pygame
 pygame.init()
 
+# Colors
+white = (255,255,255)
+black = (0, 0, 0)  # Black
+green = (0, 255, 0)  # Green
+brown = (139, 69, 19)  # Brown
+red = (255, 0, 0)  # Red
+yellow = (255, 255, 0)  # Yellow
+star_color = (128,128,128)
+
 # image
 try:
     spaceship_img = pygame.image.load(os.path.join("assets/images/","spaceship.png")).convert()
@@ -27,14 +36,19 @@ try:
 except pygame.error as e:
     print(f"Error loading stone image file: {e}")   
 
-# Colors
-white = (255,255,255)
-black = (0, 0, 0)  # Black
-green = (0, 255, 0)  # Green
-brown = (139, 69, 19)  # Brown
-red = (255, 0, 0)  # Red
-yellow = (255, 255, 0)  # Yellow
-star_color = (128,128,128)
+
+try:
+    expl_anim = {}
+    expl_anim['lg'] = []
+    expl_anim['sm'] = []
+    for i in range(9):
+        expl_img = pygame.image.load(os.path.join("assets/images/expl", f"expl{i}.png")).convert()
+        expl_img.set_colorkey(black)
+        expl_anim['lg'].append(pygame.transform.scale(expl_img, (75, 75)))
+        expl_anim['sm'].append(pygame.transform.scale(expl_img, (30, 30)))
+        
+except pygame.error as e:
+    print(f"Error loading explosion image file: {e}")
 
 def random_star_speed():
     return random.uniform(1, 30)

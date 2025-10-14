@@ -105,7 +105,7 @@ class Player(pygame.sprite.Sprite):
         # Set the initial position of the spaceship as the bottom center of the screen
         self.rect = self.image.get_rect()
         if player_id == 0:  # Player 1
-            self.rect.center = (width, height - 60)
+            self.rect.center = (width/2, height - 60)
 
         # Player attributes
         self.player_id = player_id

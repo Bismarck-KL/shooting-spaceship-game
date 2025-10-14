@@ -30,7 +30,8 @@ class Button:
 
 # Create buttons
 single_player_btn = Button("Single Player", 300, 250)
-quit_btn = Button("Quit", 300, 320)
+muiltiple_player_pve_btn = Button("Multiplayer PvE", 300, 320)
+quit_btn = Button("Quit", 300, 390)
 
 # Main loop
 running = True
@@ -45,11 +46,15 @@ while running:
             if single_player_btn.is_clicked(event.pos):
                 subprocess.Popen(["python", "main.py"])  # Start main game script
                 running = False  # Close current script
+            elif muiltiple_player_pve_btn.is_clicked(event.pos):
+                subprocess.Popen(["python", "main_multi.py"])  # Start main game script
+                running = False  # Close current script
             elif quit_btn.is_clicked(event.pos):
                 running = False
 
     # Draw everything
     single_player_btn.draw(screen)
+    muiltiple_player_pve_btn.draw(screen)
     quit_btn.draw(screen)
 
     pygame.display.flip()

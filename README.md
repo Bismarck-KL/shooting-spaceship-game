@@ -12,6 +12,15 @@ The Spaceship Game is a 2D arcade-style game developed using Pygame, where playe
 - Restart functionality to try again after game over.
 - Randomized falling stones and background stars.
 
+## Controls
+
+- **WASD Keys**: Move **Player 1**’s spaceship.
+- **Arrow Keys**: Move **Player 2**’s spaceship.
+- **Escape Key**: Exit the application.
+- **Spacebar**: Restart the game after a game over.
+- **Backspace**: Return to the game menu after a game over.
+
+
 ## Requirements
 
 - Python 3.x
@@ -50,6 +59,8 @@ The Spaceship Game is a 2D arcade-style game developed using Pygame, where playe
     shooting-spaceship-game/
     ├── start.py                # Start manu application file
     ├── main.py                 # Main application file
+    ├── color.py                # Color file
+    ├── game_image_loader.py    # For loading the image assets file
     ├── loading_screen.py       # Loading screen file
     ├── requirements.txt        # Python dependencies
     ├── assets/                 # Asset folder

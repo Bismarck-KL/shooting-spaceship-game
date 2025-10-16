@@ -31,7 +31,7 @@ frame_per_seconds = 60
 pygame.init()
 
 # Load images
-spaceship_img, stone_img, expl_anim = load_assets()
+spaceship_img, spaceship_img_2, stone_img, expl_anim = load_assets()
 
 
 def random_star_speed():
@@ -85,8 +85,11 @@ class Player(pygame.sprite.Sprite):
 
         # Load and scale the spaceship image
         self.image = pygame.transform.scale(spaceship_img, (50, 50))
-        self.image.set_colorkey((255, 255, 255))  # Set white as the transparent color
-        
+        if player_id == 0:
+            self.image.set_colorkey(white)  # Set white as the transparent color
+        else:
+            self.image.set_colorkey(black)  # Set black as the transparent color
+
         # Set the initial position of the spaceship as the bottom center of the screen
         self.rect = self.image.get_rect()
         if player_id == 0:  # Player 1
@@ -176,7 +179,10 @@ class Player(pygame.sprite.Sprite):
         if self.flashing:
             if current_time - self.flash_start_time < 750:  # Flashing duration
                 if (current_time // 100) % 2 == 0:  # Flash every 100 ms
-                    self.image.fill((255, 255, 255))  # Flash white
+                    if self.player_id == 0:
+                        self.image.fill((white))  # Flash white
+                    else:
+                        self.image.fill((black))  # Flash black
                 else:
                     self.reset_image()  # Reset to original
             else:
@@ -185,8 +191,12 @@ class Player(pygame.sprite.Sprite):
 
     def reset_image(self):
         """Reset the player image to the original."""
-        self.image = pygame.transform.scale(spaceship_img, (50, 50))  # Reset to original size
-        self.image.set_colorkey((255, 255, 255))  # Reset transparency
+        if self.player_id == 0:
+            self.image = pygame.transform.scale(spaceship_img, (50, 50))  # Reset to original size
+            self.image.set_colorkey(white)  # Reset transparency
+        else:
+            self.image = pygame.transform.scale(spaceship_img_2, (50, 50))  # Reset to original size
+            self.image.set_colorkey(black)  # Reset transparency
 
     def shoot(self):
         """Shoot a bullet."""
@@ -337,7 +347,7 @@ players_group = pygame.sprite.Group()
 player_1 = Player(spaceship_img, width, height, 0)
 players_group.add(player_1)
 if game_mode_id == 1:  # multiplayer mode
-    player_2 = Player(spaceship_img, width, height, 1)
+    player_2 = Player(spaceship_img_2, width, height, 1)
     players_group.add(player_2)
 all_sprites.add(players_group)
  

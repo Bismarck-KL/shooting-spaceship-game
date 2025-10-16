@@ -44,10 +44,10 @@ while running:
                 running = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if single_player_btn.is_clicked(event.pos):
-                subprocess.Popen(["python", "main.py"])  # Start main game script
+                subprocess.Popen(["python", "main.py", "single_player_pve"])  # Start main game script
                 running = False  # Close current script
             elif muiltiple_player_pve_btn.is_clicked(event.pos):
-                subprocess.Popen(["python", "main_multi.py"])  # Start main game script
+                subprocess.Popen(["python", "main.py", "multiple_player_pve"])  # Start main game script
                 running = False  # Close current script
             elif quit_btn.is_clicked(event.pos):
                 running = False

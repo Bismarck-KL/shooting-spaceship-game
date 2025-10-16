@@ -4,6 +4,18 @@ import os
 import sys
 import subprocess
 
+
+game_mode = "single_player_pve" # default mode
+game_mode_id = 0
+if len(sys.argv) > 1:
+    game_mode = sys.argv[1] # get game mode from arguments
+    if game_mode == "single_player_pve":
+        game_mode_id = 0
+    elif game_mode == "multiple_player_pve":
+        game_mode_id = 1
+print(f"Game mode: {game_mode}")
+
+
 # Set up display
 width, height = 800, 600
 screen = pygame.display.set_mode((width, height))
@@ -397,12 +409,23 @@ def draw_report_ui():
     score_rect.centerx = width // 2  # Center horizontally
     score_rect.top = 20
     pygame.draw.rect(screen, white, score_rect.inflate(20, 10), 2)
-    screen.blit(score_text,     try_again_text = game_font.render("Press space to try again Backspace to return to menu",True,white)
-score_rect)
+    screen.blit(score_text, score_rect)
 
-    try_again_rect = try_again_text.get_rect()
-    try_again_rect.center = (width // 2, height // 2)
-    screen.blit(try_again_text, try_again_rect)
+    # First line
+    try_again_text1 = game_font.render("Press space to try again", True, white)
+    try_again_rect1 = try_again_text1.get_rect()
+    try_again_rect1.centerx = width // 2
+    try_again_rect1.centery = height // 2 - 15  # Offset up a bit
+    
+    # Second line
+    try_again_text2 = game_font.render("Backspace to return to menu", True, white)
+    try_again_rect2 = try_again_text2.get_rect()
+    try_again_rect2.centerx = width // 2
+    try_again_rect2.centery = height // 2 + 15  # Offset down a bit
+    
+    # Draw both lines
+    screen.blit(try_again_text1, try_again_rect1)
+    screen.blit(try_again_text2, try_again_rect2)
 
 def try_again():
 

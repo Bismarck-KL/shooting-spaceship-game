@@ -3,7 +3,11 @@ import random
 import os
 import sys
 import subprocess
+
+# Import colors and images
 from color import *
+from game_image_loader import load_assets
+
 
 game_mode = "single_player_pve" # default mode
 game_mode_id = 0
@@ -26,33 +30,9 @@ frame_per_seconds = 60
 # Initialize pygame
 pygame.init()
 
-# image
-# Load spaceship image
-try:
-    spaceship_img = pygame.image.load(os.path.join("assets/images/","spaceship.png")).convert()
-except pygame.error as e:
-    print(f"Error loading spaceship image file: {e}")
+# Load images
+spaceship_img, stone_img, expl_anim = load_assets()
 
-# Load stone images
-stone_img = [None, None]
-try:
-    stone_img[0] = pygame.image.load(os.path.join("assets/images/","rock3.png")).convert()
-    stone_img[1] = pygame.image.load(os.path.join("assets/images/","rock6.png")).convert()
-except pygame.error as e:
-    print(f"Error loading stone image file: {e}")   
-
-# Explosion animation
-try:
-    expl_anim = {}
-    expl_anim['lg'] = []
-    expl_anim['sm'] = []
-    for i in range(9):
-        expl_img = pygame.image.load(os.path.join("assets/images/expl", f"expl{i}.png")).convert()
-        expl_img.set_colorkey(black)
-        expl_anim['lg'].append(pygame.transform.scale(expl_img, (75, 75)))
-        expl_anim['sm'].append(pygame.transform.scale(expl_img, (45,45)))
-except pygame.error as e:
-    print(f"Error loading explosion image file: {e}")
 
 def random_star_speed():
     return random.uniform(1, 30)

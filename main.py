@@ -3,6 +3,7 @@ import random
 import os
 import sys
 import subprocess
+from color import *
 
 game_mode = "single_player_pve" # default mode
 game_mode_id = 0
@@ -12,7 +13,6 @@ if len(sys.argv) > 1:
         game_mode_id = 0
     elif game_mode == "multiple_player_pve":
         game_mode_id = 1
-print(f"Game mode: {game_mode}")
 
 # Set up display
 width, height = 800, 600
@@ -25,15 +25,6 @@ frame_per_seconds = 60
 
 # Initialize pygame
 pygame.init()
-
-# Colors
-white = (255,255,255)
-black = (0, 0, 0)  # Black
-green = (0, 255, 0)  # Green
-brown = (139, 69, 19)  # Brown
-red = (255, 0, 0)  # Red
-yellow = (255, 255, 0)  # Yellow
-star_color = (128,128,128)
 
 # image
 # Load spaceship image
@@ -357,10 +348,7 @@ class Bullet(pygame.sprite.Sprite):
         if self.rect.bottom < 0 or self.rect.top > height:
             self.kill()  # Remove the bullet if it goes off-screen
 
-
-
- # Create sprite groups
-
+# Create sprite groups
 all_sprites = pygame.sprite.Group()
 stones = pygame.sprite.Group()
 player_bullets = pygame.sprite.Group()

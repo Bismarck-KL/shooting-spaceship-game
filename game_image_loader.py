@@ -12,6 +12,13 @@ def load_assets():
         print(f"Error loading spaceship image file: {e}")
         spaceship_img = None  # Set to None if loading fails
 
+    # Load spaceship image
+    try:
+        spaceship_img_2 = pygame.image.load(os.path.join("assets/images/", "spaceship_2.png")).convert()
+    except pygame.error as e:
+        print(f"Error loading spaceship image file: {e}")
+        spaceship_img_2 = None  # Set to None if loading fails
+
     # Load stone images
     stone_img = [None, None]
     try:
@@ -33,4 +40,4 @@ def load_assets():
     except pygame.error as e:
         print(f"Error loading explosion image file: {e}")
 
-    return spaceship_img, stone_img, expl_anim
+    return spaceship_img, spaceship_img_2, stone_img, expl_anim

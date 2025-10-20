@@ -282,13 +282,14 @@ class Explosion(pygame.sprite.Sprite):
 # Stone class 
 class Stone(pygame.sprite.Sprite):
     def reset_position(self):
-        # some stones may appear partially off-screen
-        self.rect.x = random.uniform(width/3, width*2/3 - self.size) 
+
+        self.rect.x = random.randint(int(width/3) , int(width*2/3) - int(self.rect.width)) 
         self.rect.y = random.randint(-100, height + 100)
         self.speedy = random.randint(-6,6)
         #  Ensure the stone is moving downwards if speedy is 0
         if self.speedy ==0:
             self.speedy = 1  
+
     def __init__(self):
         super().__init__()
         self.image_ori = random.choice(stone_img)
@@ -298,8 +299,9 @@ class Stone(pygame.sprite.Sprite):
         self.rot_degree = random.randrange(-3, 3)
         self.size = random.randint(20,30)
         self.rect = self.image.get_rect()
+
         self.radius = self.rect.width * 0.85 /2
-        # pygame.draw.circle(self.image,red,self.rect.center,self.radius) #Debug rendering
+        pygame.draw.circle(self.image,red,self.rect.center,self.radius) #Debug rendering
         self.reset_position()    
 
     def update(self):
@@ -477,6 +479,7 @@ while running:
                     expl = Explosion(stone.rect.center, 'lg')
                     all_sprites.add(expl)
                     for player in players:
+                        print("Player hit",player.player_id)
                         player.set_health_point(-1)
                         player.flash_white()   
 

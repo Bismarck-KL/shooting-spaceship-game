@@ -52,6 +52,7 @@ while running:
             elif quit_btn.is_clicked(event.pos):
                 running = False
 
+
     # Draw everything
     single_player_btn.draw(screen)
     muiltiple_player_pve_btn.draw(screen)

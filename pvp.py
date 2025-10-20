@@ -84,11 +84,11 @@ class Player(pygame.sprite.Sprite):
         # Set the initial position of the spaceship as the bottom center of the screen
         self.rect = self.image.get_rect()
         if player_id == 0:  # Player 1
-            self.rect.center = (width // 4, height // 2)    
+            self.rect.center = (width // 4, height // 3)
             # rotate the image -90 degree
             self.image = pygame.transform.rotate(self.image, -90)
         else:  # multiplayer mode       
-            self.rect.center = (3 * width // 4, height // 2)
+            self.rect.center = (3 * width // 4, height // 3 * 2)
             # rotate the image 90 degree
             self.image = pygame.transform.rotate(self.image, 90)
 

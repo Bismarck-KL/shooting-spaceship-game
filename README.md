@@ -2,15 +2,20 @@
 
 ## Overview
 
-The Spaceship Game is a 2D arcade-style game developed using Pygame, where players control a spaceship and navigate through falling stones while shooting bullets to score points. The game features a vibrant visual experience with particle effects and a simple UI displaying health and score.
+The Spaceship Game is a 2D arcade-style game developed using Pygame, featuring multiple game modes including single-player, cooperative PvE, and PvP gameplay. Players control spaceships to navigate through falling stones, shoot bullets, and compete or cooperate depending on the chosen mode. The game features vibrant visual effects, particle systems, and interactive gameplay mechanics.
 
 ## Features
 
-- Control a spaceship using keyboard inputs.
-- Shoot bullets to destroy falling stones.
-- Health system that decreases upon collision with stones.
-- Restart functionality to try again after game over.
-- Randomized falling stones and background stars.
+- Multiple game modes (Single Player, Co-op PvE, and PvP)
+- Dynamic spaceship controls with particle trail effects
+- Automatic shooting system with custom bullet trajectories
+- Protective shield system
+- Health system with visual damage feedback
+- Collision detection and explosion animations
+- Randomized falling stones with rotation effects
+- Animated star background
+- Score tracking system
+- Interactive game menu
 
 ## Controls
 
@@ -57,15 +62,20 @@ The Spaceship Game is a 2D arcade-style game developed using Pygame, where playe
 ## File Structure
 
     shooting-spaceship-game/
-    ├── start.py                # Start manu application file
-    ├── main.py                 # Main application file
-    ├── color.py                # Color file
-    ├── game_image_loader.py    # For loading the image assets file
-    ├── loading_screen.py       # Loading screen file
-    ├── requirements.txt        # Python dependencies
-    ├── assets/                 # Asset folder
-        ├── image               # Image folder
-        ├── sfx                 # Sound effect folder
+    ├── start.py                # Main menu and game mode selection
+    ├── main.py                 # Single player and PvE gameplay implementation
+    ├── pvp.py                 # PvP mode gameplay implementation
+    ├── color.py               # Color definitions
+    ├── game_image_loader.py   # Asset loading utilities
+    ├── loading_screen.py      # Loading screen implementation
+    ├── requirements.txt       # Python dependencies
+    ├── assets/               # Game resources
+        ├── images/           # Sprite and visual assets
+            ├── expl/        # Explosion animation frames
+            ├── rock3.png    # Stone sprites
+            ├── rock6.png    # Stone sprites
+            ├── spaceship.png # Player spaceship sprite
+        ├── sfx/            # Sound effect assets
 
 ## Dependencies
 

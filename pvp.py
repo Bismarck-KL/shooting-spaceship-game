@@ -208,6 +208,7 @@ class Player(pygame.sprite.Sprite):
         if self.health_point <= 0:
             self.health_point = 0
             self.kill()
+            game_status = "End"
         # check_health()
 
     def flash_white(self):
@@ -300,7 +301,7 @@ class Stone(pygame.sprite.Sprite):
         self.size = random.randint(20,30)
         self.rect = self.image.get_rect()
 
-        self.radius = self.rect.width * 0.85 /2
+        self.radius = self.rect.width * 0.8 /2
         pygame.draw.circle(self.image,red,self.rect.center,self.radius) #Debug rendering
         self.reset_position()    
 
@@ -427,7 +428,7 @@ def try_again():
     players_group = pygame.sprite.Group()
     player_1 = Player(spaceship_img, width, height, 0)
     players_group.add(player_1)
-    player_2 = Player(spaceship_img, width, height, 1)
+    player_2 = Player(spaceship_img_2, width, height, 1)
     players_group.add(player_2)
     all_sprites.add(players_group)
     for _ in range(8):
@@ -461,15 +462,15 @@ while running:
         case "Playing":
             draw_star()
             all_sprites.update()  # Update all sprites
-            stone_playerbullet_hit = pygame.sprite.groupcollide(stones, player_bullets, False, False)  # Check for collisions between stones and player bullets
+            stone_playerbullet_hit = pygame.sprite.groupcollide(stones, player_bullets, False, True)  # Check for collisions between stones and player bullets
             if stone_playerbullet_hit:
                 for stone in stone_playerbullet_hit:
                     # show explosion
                     expl = Explosion(stone.rect.center, 'sm')
                     all_sprites.add(expl)
                     # add score with the stone size
-                    
                     stone.reset_position()
+
 
             player_stone_hit = pygame.sprite.groupcollide(stones, players_group, False, False)
             if player_stone_hit:

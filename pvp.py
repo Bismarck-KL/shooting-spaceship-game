@@ -283,10 +283,12 @@ class Explosion(pygame.sprite.Sprite):
 class Stone(pygame.sprite.Sprite):
     def reset_position(self):
         # some stones may appear partially off-screen
-        self.rect.x = random.randint(-100, width - self.rect.width+100) 
-        self.rect.y = random.randint(-100, -40)
-        self.speedy = random.randint(1,6)
-        self.speedx = random.randint(-2, 2)
+        self.rect.x = random.uniform(width/3, width*2/3 - self.size) 
+        self.rect.y = random.randint(-100, height + 100)
+        self.speedy = random.randint(-6,6)
+        #  Ensure the stone is moving downwards if speedy is 0
+        if self.speedy ==0:
+            self.speedy = 1  
     def __init__(self):
         super().__init__()
         self.image_ori = random.choice(stone_img)
@@ -294,9 +296,7 @@ class Stone(pygame.sprite.Sprite):
         self.image = self.image_ori.copy()
         self.total_degree = 0
         self.rot_degree = random.randrange(-3, 3)
-        self.size = random.randint(20,100)
-        # self.image = pygame.Surface((self.size, self.size))
-        # self.image.fill(brown)  # Brown stone
+        self.size = random.randint(20,30)
         self.rect = self.image.get_rect()
         self.radius = self.rect.width * 0.85 /2
         # pygame.draw.circle(self.image,red,self.rect.center,self.radius) #Debug rendering
@@ -304,10 +304,10 @@ class Stone(pygame.sprite.Sprite):
 
     def update(self):
         self.rotate()
-        self.rect.x += self.speedx
         self.rect.y += self.speedy
-        if self.rect.top > height:
+        if self.rect.top > height or self.rect.bottom < 0:
             self.reset_position() 
+
 
     def rotate(self):   
         self.total_degree += self.rot_degree
@@ -361,10 +361,10 @@ player_2 = Player(spaceship_img_2, width, height, 1)
 players_group.add(player_2)
 all_sprites.add(players_group)
  
-# for _ in range(8):
-#     stone = Stone()
-#     all_sprites.add(stone)
-#     stones.add(stone)
+for _ in range(8):
+    stone = Stone()
+    all_sprites.add(stone)
+    stones.add(stone)
 
 game_status = "Playing"
 
@@ -384,20 +384,7 @@ def draw_game_ui():
     pygame.draw.rect(screen, white, player_2_health_rect.inflate(20, 10), 2)
     screen.blit(player_2_health_text, player_2_health_rect)
 
-    # stone_text  = game_font.render(f"{len(stones):.2f}", True, white)
-    # stone_rect = stone_text.get_rect()
-    # stone_rect.topright = (width - 20, 20)   
-    # pygame.draw.rect(screen, red, stone_rect.inflate(20, 10), 2)
-    # screen.blit(stone_text, stone_rect)
-
 def draw_report_ui():
-    # To-Do draw report
-    score_text = game_font.render(f"{game_score:.2f}", True, white)
-    score_rect = score_text.get_rect()
-    score_rect.centerx = width // 2  # Center horizontally
-    score_rect.top = 20
-    pygame.draw.rect(screen, white, score_rect.inflate(20, 10), 2)
-    screen.blit(score_text, score_rect)
 
     # First line
     try_again_text1 = game_font.render("Press space to try again", True, white)
@@ -433,9 +420,9 @@ def try_again():
     if not player_2 == None:
         player_2.kill()
 
-    # stones = pygame.sprite.Group()
-    # player_bullets = pygame.sprite.Group()
-    # players_group = pygame.sprite.Group()
+    stones = pygame.sprite.Group()
+    player_bullets = pygame.sprite.Group()
+    players_group = pygame.sprite.Group()
     player_1 = Player(spaceship_img, width, height, 0)
     players_group.add(player_1)
     player_2 = Player(spaceship_img, width, height, 1)
@@ -447,7 +434,7 @@ def try_again():
         stones.add(stone)
 
     game_status = "Playing"
-    game_score = 0
+
 
 while running:
 
@@ -479,7 +466,7 @@ while running:
                     expl = Explosion(stone.rect.center, 'sm')
                     all_sprites.add(expl)
                     # add score with the stone size
-                    game_score += stone.radius
+                    
                     stone.reset_position()
 
             player_stone_hit = pygame.sprite.groupcollide(stones, players_group, False, False)

@@ -12,6 +12,7 @@ from game_image_loader import load_assets
 from star_background import init_star_particles, draw_star
 from stone import Stone
 from explosion import Explosion
+from skill import Skill
 
 game_mode = "single_player_pve" # default mode
 game_mode_id = 0
@@ -186,7 +187,7 @@ class Player(pygame.sprite.Sprite):
 
     def shoot(self):
         """Shoot a bullet."""
-        bullet = Bullet(self.rect.centerx, self.rect.top, 'player')
+        bullet = Bullet(self.rect.centerx, self.rect.top, 'player', self.player_id)
         all_sprites.add(bullet)
         player_bullets.add(bullet)
 
@@ -194,10 +195,16 @@ class Player(pygame.sprite.Sprite):
         """Update health points."""
         global game_status
         self.health_point += point
+        if self.health_point >= 5:
+            self.health_point = 5
         if self.health_point <= 0:
             self.health_point = 0
             self.kill()
         check_health()
+
+    def resfull_health(self):
+        """Restore health to maximum."""
+        self.health_point = 1
 
     def flash_white(self):
         """Trigger white flash effect."""
@@ -224,6 +231,17 @@ class Player(pygame.sprite.Sprite):
             player_shield.remove(self.shield)
             self.shield = None
 
+    def speed_boost(self, boost_amount):
+        """ Boost the player's speed."""
+        self.speed += boost_amount
+        if self.speed > 20:  # Maximum speed limit
+            self.speed = 20
+
+    def shoot_speed_boost(self, boost_amount):
+        """ Decrease the player's shooting speed (increase shooting rate)."""
+        if self.shooting_speed - boost_amount >= 20:  # Minimum shooting speed limit
+            self.shooting_speed -= boost_amount
+
 # Shiled class
 class Shield(pygame.sprite.Sprite):
     def __init__(self, player):
@@ -242,8 +260,9 @@ class Shield(pygame.sprite.Sprite):
 
 # Bullet class
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, x, y, type):
+    def __init__(self, x, y, type, player_id):
         super().__init__()
+        self.player_id = player_id
         self.image = pygame.Surface((5, 10))
         if type == 'player':
             self.image.fill(yellow)  # Yellow bullet for player
@@ -267,6 +286,7 @@ stones = pygame.sprite.Group()
 player_bullets = pygame.sprite.Group()
 player_shield = pygame.sprite.Group()
 players_group = pygame.sprite.Group()
+skills_group = pygame.sprite.Group()
 player_1 = Player(spaceship_img, width, height, 0)
 players_group.add(player_1)
 if game_mode_id == 1:  # multiplayer mode
@@ -402,13 +422,23 @@ while running:
             all_sprites.update()  # Update all sprites
             stone_playerbullet_hit = pygame.sprite.groupcollide(stones, player_bullets, False, False)  # Check for collisions between stones and player bullets
             if stone_playerbullet_hit:
-                for stone in stone_playerbullet_hit:
+                for stone,bullets in stone_playerbullet_hit.items():
                     # show explosion
                     expl = Explosion(stone.rect.center, 'sm')
                     all_sprites.add(expl)
                     # add score with the stone size
                     game_score += stone.radius
                     stone.reset_position()
+                    for bullet in bullets:
+                        # randomly drop skill with 30% chance
+                        if random.random() < 0.3:
+                            # get the bullet's player id
+                            player_id = bullet.player_id
+                            skill = Skill(width, height, stone.rect.x, stone.rect.y, game_mode_id, bullet.player_id)
+                            all_sprites.add(skill)
+                            skills_group.add(skill)
+                    
+
 
             player_stone_hit = pygame.sprite.groupcollide(stones, players_group, False, False)
             if player_stone_hit:
@@ -430,7 +460,38 @@ while running:
                     stone.reset_position()
                     for shield in shields:
                         shield.player.deactivate_shield()
-            
+
+            player_skill_hit = pygame.sprite.groupcollide(skills_group, players_group, True, False)
+            if player_skill_hit:
+                for skill,players in player_skill_hit.items():
+                    for player in players:
+                        if skill.skill_type == 'heal':
+                            # heal the player which is health = 0 if pvp
+                            if game_mode_id == 0 or game_mode_id == 2:
+                                player.set_health_point(1)
+                            else:
+                                if player_1 is None or player_1.health_point == 0:
+                                    # res player_1
+                                    player_1 = Player(spaceship_img, width, height, 0)
+                                    player_1.resfull_health()
+                                    players_group.add(player_1)
+                                    all_sprites.add(player_1)  # Add to all_sprites group
+                                elif player_2 is None or player_2.health_point == 0:
+                                    # res player_2
+                                    player_2 = Player(spaceship_img_2, width, height, 1)
+                                    player_2.resfull_health()
+                                    players_group.add(player_2)
+                                    all_sprites.add(player_2)  # Add to all_sprites group
+                                else:
+                                    player.set_health_point(1)
+                            
+                        elif skill.skill_type == 'shield':
+                            player.activate_shield()
+                        elif skill.skill_type == 'speed_boost':
+                            player.speed_boost(1)  # Increase speed by 1
+                        elif skill.skill_type == 'shoot_speed_boost':
+                            player.shoot_speed_boost(20)  # Decrease shoot speed by 20
+
             all_sprites.draw(screen)  # Draw all sprites
             draw_game_ui()
         case "End":

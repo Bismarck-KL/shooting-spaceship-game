@@ -9,6 +9,7 @@ from color import *
 from game_image_loader import load_assets
 
 # Import classes
+from star_background import init_star_particles, draw_star
 from stone import Stone
 
 # Set up display
@@ -27,25 +28,9 @@ pygame.init()
 # Load images
 spaceship_img, spaceship_img_2, expl_anim = load_assets()
 
-def random_star_speed():
-    return random.uniform(1, 30)
+# Initialize star particles
+star_particles = init_star_particles(width, height)
 
-# Initialize water particles with actual speeds
-star_particles = [(random.randint(0, width), random.randint(-height, 0), random_star_speed()) for _ in range(20)]  # (x, y, speed)
-
-def draw_star():
-    global star_particles
-    for i, (x, y, speed) in enumerate(star_particles):
-        y += speed  # Move down by the speed
-        if y > height:  # If the star goes off the screen
-            y = random.randint(-height, 0)  # Reset to a new position at the top
-            x = random.randint(0, width)  # Randomize the x position
-            speed = random_star_speed()  # Randomize speed
-        star_particles[i] = (x, y, speed)  # Update the particle position and speed
-
-    # Draw the stars on the screen
-    for x, y, _ in star_particles:
-        pygame.draw.circle(screen, star_color, (int(x), int(y)), random.randint(1, 3))  # For radius, using a small random size
 
 class Particle(pygame.sprite.Sprite):
     def __init__(self, x, y, player_id):
@@ -427,7 +412,7 @@ while running:
 
     match game_status:
         case "Playing":
-            draw_star()
+            draw_star(star_particles, screen, width, height)
             all_sprites.update()  # Update all sprites
             stone_playerbullet_hit = pygame.sprite.groupcollide(stones, player_bullets, False, True)  # Check for collisions between stones and player bullets
             if stone_playerbullet_hit:

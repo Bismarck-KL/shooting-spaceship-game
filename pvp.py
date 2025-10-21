@@ -8,12 +8,16 @@ import subprocess
 from color import *
 from game_image_loader import load_assets
 
+# Import classes
+from stone import Stone
+
 # Set up display
 width, height = 800, 600
 screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Spaceship Game - PvP Mode")
 clock = pygame.time.Clock()
 running = True
+game_mode_id = 2 # PVP mode
 
 frame_per_seconds = 60
 
@@ -21,7 +25,7 @@ frame_per_seconds = 60
 pygame.init()
 
 # Load images
-spaceship_img, spaceship_img_2, stone_img, expl_anim = load_assets()
+spaceship_img, spaceship_img_2, expl_anim = load_assets()
 
 def random_star_speed():
     return random.uniform(1, 30)
@@ -280,46 +284,6 @@ class Explosion(pygame.sprite.Sprite):
                 self.rect = self.image.get_rect()
                 self.rect.center = center
 
-# Stone class 
-class Stone(pygame.sprite.Sprite):
-    def reset_position(self):
-
-        self.rect.x = random.randint(int(width/3) , int(width*2/3) - int(self.rect.width)) 
-        self.rect.y = random.randint(-100, height + 100)
-        self.speedy = random.randint(-6,6)
-        #  Ensure the stone is moving downwards if speedy is 0
-        if self.speedy ==0:
-            self.speedy = 1  
-
-    def __init__(self):
-        super().__init__()
-        self.image_ori = random.choice(stone_img)
-        self.image_ori.set_colorkey(black)
-        self.image = self.image_ori.copy()
-        self.total_degree = 0
-        self.rot_degree = random.randrange(-3, 3)
-        self.size = random.randint(20,30)
-        self.rect = self.image.get_rect()
-
-        self.radius = self.rect.width * 0.8 /2
-        pygame.draw.circle(self.image,red,self.rect.center,self.radius) #Debug rendering
-        self.reset_position()    
-
-    def update(self):
-        self.rotate()
-        self.rect.y += self.speedy
-        if self.rect.top > height or self.rect.bottom < 0:
-            self.reset_position() 
-
-
-    def rotate(self):   
-        self.total_degree += self.rot_degree
-        self.total_degree = self.total_degree % 360
-        self.image = pygame.transform.rotate(self.image_ori, self.total_degree)
-        center = self.rect.center
-        self.rect = self.image.get_rect()
-        self.rect.center = center
-
 # Bullet class
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, x, y, type, player_id):
@@ -364,8 +328,11 @@ player_2 = Player(spaceship_img_2, width, height, 1)
 players_group.add(player_2)
 all_sprites.add(players_group)
  
+
+print({game_mode_id})
 for _ in range(8):
-    stone = Stone()
+
+    stone = Stone(width,height,game_mode_id)
     all_sprites.add(stone)
     stones.add(stone)
 
@@ -432,7 +399,7 @@ def try_again():
     players_group.add(player_2)
     all_sprites.add(players_group)
     for _ in range(8):
-        stone = Stone()
+        stone = Stone(width,height,game_mode_id)
         all_sprites.add(stone)
         stones.add(stone)
 
@@ -469,18 +436,18 @@ while running:
                     expl = Explosion(stone.rect.center, 'sm')
                     all_sprites.add(expl)
                     # add score with the stone size
-                    stone.reset_position()
+                    stone.reset_pvp_position()
 
 
             player_stone_hit = pygame.sprite.groupcollide(stones, players_group, False, False)
             if player_stone_hit:
                 for stone,players in player_stone_hit.items():
-                    stone.reset_position()
+                    stone.reset_pvp_position()
                     # show explosion
                     expl = Explosion(stone.rect.center, 'lg')
                     all_sprites.add(expl)
                     for player in players:
-                        print("Player hit",player.player_id)
+                        # print("Player hit",player.player_id)
                         player.set_health_point(-1)
                         player.flash_white()   
 

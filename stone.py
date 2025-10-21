@@ -25,8 +25,6 @@ class Stone(pygame.sprite.Sprite):
 
     def reset_pvp_position(self):
 
-        print({self.game_mode_id})   
-
         self.rect.x = random.randint(int(self.screen_width/3) , int(self.screen_width*2/3) - int(self.rect.width)) 
         self.rect.y = random.randint(-100, self.screen_height + 100)
         self.speedy = random.randint(-6,6)

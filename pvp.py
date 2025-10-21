@@ -194,11 +194,14 @@ class Player(pygame.sprite.Sprite):
 
     def set_health_point(self, point):
         """Update health points."""
-        global game_status
+        global game_status, game_loser
         self.health_point += point
+        if self.health_point >= 5:
+            self.health_point = 5
         if self.health_point <= 0:
             self.health_point = 0
             self.kill()
+            game_loser = self.player_id
             game_status = "End"
         # check_health()
 
@@ -229,6 +232,17 @@ class Player(pygame.sprite.Sprite):
             all_sprites.remove(self.shield)
             player_shield.remove(self.shield)
             self.shield = None
+
+    def speed_boost(self, boost_amount):
+        """ Boost the player's speed."""
+        self.speed += boost_amount
+        if self.speed > 20:  # Maximum speed limit
+            self.speed = 20
+
+    def shoot_speed_boost(self, boost_amount):
+        """ Decrease the player's shooting speed (increase shooting rate)."""
+        if self.shooting_speed - boost_amount >= 20:  # Minimum shooting speed limit
+            self.shooting_speed -= boost_amount
 
 # Shiled class
 class Shield(pygame.sprite.Sprite):
@@ -298,7 +312,7 @@ for _ in range(8):
     stones.add(stone)
 
 game_status = "Playing"
-
+game_loser = -1
 
 # Font setup
 game_font = pygame.font.Font(None, 24) 
@@ -317,6 +331,11 @@ def draw_game_ui():
 
 def draw_report_ui():
 
+    try_again_text = game_font.render("Winner: "+ ("Player 1" if game_loser == 1 else "Player 2"), True, white)
+    try_again_rect = try_again_text.get_rect()
+    try_again_rect.centerx = width // 2
+    try_again_rect.centery = height // 2 - 45  # Offset up a bit
+
     # First line
     try_again_text1 = game_font.render("Press space to try again", True, white)
     try_again_rect1 = try_again_text1.get_rect()
@@ -330,6 +349,7 @@ def draw_report_ui():
     try_again_rect2.centery = height // 2 + 15  # Offset down a bit
     
     # Draw both lines
+    screen.blit(try_again_text, try_again_rect)
     screen.blit(try_again_text1, try_again_rect1)
     screen.blit(try_again_text2, try_again_rect2)
 
@@ -364,6 +384,7 @@ def try_again():
         all_sprites.add(stone)
         stones.add(stone)
 
+    game_loser = -1
     game_status = "Playing"
 
 
@@ -441,6 +462,31 @@ while running:
                             bullet.kill()
                             player.set_health_point(-1)
                             player.flash_white()    
+
+            playerbullet_shield_hit = pygame.sprite.groupcollide(player_bullets, player_shield, False, False)
+            if playerbullet_shield_hit:
+                for bullet,shields in playerbullet_shield_hit.items():
+                    for shield in shields:
+                        if not (bullet.player_id == shield.player.player_id):  # only hit the other player's shield
+                            # show explosion
+                            expl = Explosion(bullet.rect.center, 'sm')
+                            all_sprites.add(expl)
+                            bullet.kill()
+                            shield.player.deactivate_shield()
+
+            player_skill_hit = pygame.sprite.groupcollide(skills_group, players_group, True, False)
+            if player_skill_hit:
+                for skill,players in player_skill_hit.items():
+                    for player in players:
+                        # apply skill effect
+                        if skill.skill_type == 'heal':
+                            player.set_health_point(1)
+                        elif skill.skill_type == 'speed_boost':
+                            player.speed_boost(1)
+                        elif skill.skill_type == 'shoot_speed_boost':
+                            player.shoot_speed_boost(20)
+                        elif skill.skill_type == 'shield':
+                            player.activate_shield()
             
             all_sprites.draw(screen)  # Draw all sprites
             draw_game_ui()

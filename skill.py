@@ -1,12 +1,13 @@
 #  skill class, create after player destroy the stone, and feature different skills to help player
 import pygame
-from color import green, red, blue
+from color import green, red, blue, yellow
 import random
 import os
 # Skill types
 SKILL_TYPES = { 
     'heal': {'color': green }, #add one helth point
-    'speed_boost': {'color': blue}, #increase speed for a period
+    'speed_boost': {'color': blue}, #increase speed
+    'shoot_speed_boost': {'color': yellow}, #increase shooting speed
     'shield': {'color': red} #temporary invincibility
 }
 

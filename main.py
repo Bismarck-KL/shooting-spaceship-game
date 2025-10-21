@@ -14,6 +14,9 @@ from stone import Stone
 from explosion import Explosion
 from skill import Skill
 
+# Import sounds
+from game_sound_loader import play_shoot_sound, play_explosion_sound, play_powerup_sound, play_shield_sound
+
 game_mode = "single_player_pve" # default mode
 game_mode_id = 0
 if len(sys.argv) > 1:
@@ -190,6 +193,7 @@ class Player(pygame.sprite.Sprite):
         bullet = Bullet(self.rect.centerx, self.rect.top, 'player', self.player_id)
         all_sprites.add(bullet)
         player_bullets.add(bullet)
+        play_shoot_sound()
 
     def set_health_point(self, point):
         """Update health points."""
@@ -426,6 +430,7 @@ while running:
                     # show explosion
                     expl = Explosion(stone.rect.center, 'sm')
                     all_sprites.add(expl)
+                    play_explosion_sound()
                     # add score with the stone size
                     game_score += stone.radius
                     stone.reset_position()
@@ -446,6 +451,7 @@ while running:
                     stone.reset_position()
                     # show explosion
                     expl = Explosion(stone.rect.center, 'lg')
+                    play_explosion_sound()
                     all_sprites.add(expl)
                     for player in players:
                         player.set_health_point(-1)
@@ -456,6 +462,8 @@ while running:
                 for stone,shields in shield_stone_hit.items():
                     # show explosion
                     expl = Explosion(stone.rect.center, 'sm')
+                    play_explosion_sound()
+                    play_shield_sound()
                     all_sprites.add(expl)
                     stone.reset_position()
                     for shield in shields:
@@ -491,6 +499,7 @@ while running:
                             player.speed_boost(1)  # Increase speed by 1
                         elif skill.skill_type == 'shoot_speed_boost':
                             player.shoot_speed_boost(20)  # Decrease shoot speed by 20
+                        play_powerup_sound()
 
             all_sprites.draw(screen)  # Draw all sprites
             draw_game_ui()

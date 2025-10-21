@@ -238,12 +238,12 @@ class Player(pygame.sprite.Sprite):
     def speed_boost(self, boost_amount):
         """ Boost the player's speed."""
         self.speed += boost_amount
-        if self.speed > 20:  # Maximum speed limit
-            self.speed = 20
+        if self.speed > 15:  # Maximum speed limit
+            self.speed = 15
 
     def shoot_speed_boost(self, boost_amount):
         """ Decrease the player's shooting speed (increase shooting rate)."""
-        if self.shooting_speed - boost_amount >= 20:  # Minimum shooting speed limit
+        if self.shooting_speed - boost_amount >= 100:  # Minimum shooting speed limit
             self.shooting_speed -= boost_amount
 
 # Shiled class

@@ -498,7 +498,7 @@ while running:
                         elif skill.skill_type == 'speed_boost':
                             player.speed_boost(1)  # Increase speed by 1
                         elif skill.skill_type == 'shoot_speed_boost':
-                            player.shoot_speed_boost(20)  # Decrease shoot speed by 20
+                            player.shoot_speed_boost(10)  # Decrease shoot speed by 10
                         play_powerup_sound()
 
             all_sprites.draw(screen)  # Draw all sprites

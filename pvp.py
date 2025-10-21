@@ -14,6 +14,9 @@ from stone import Stone
 from explosion import Explosion
 from skill import Skill
 
+# Import sound functions
+from game_sound_loader import play_shoot_sound, play_explosion_sound, play_powerup_sound, play_shield_sound
+
 # Set up display
 width, height = 800, 600
 screen = pygame.display.set_mode((width, height))
@@ -191,6 +194,7 @@ class Player(pygame.sprite.Sprite):
         bullet = Bullet(self.rect.right if self.player_id == 0 else self.rect.left, self.rect.centery, 'player',self.player_id)
         all_sprites.add(bullet)
         player_bullets.add(bullet)
+        play_shoot_sound()
 
     def set_health_point(self, point):
         """Update health points."""
@@ -236,12 +240,12 @@ class Player(pygame.sprite.Sprite):
     def speed_boost(self, boost_amount):
         """ Boost the player's speed."""
         self.speed += boost_amount
-        if self.speed > 20:  # Maximum speed limit
-            self.speed = 20
+        if self.speed > 10:  # Maximum speed limit
+            self.speed = 10
 
     def shoot_speed_boost(self, boost_amount):
         """ Decrease the player's shooting speed (increase shooting rate)."""
-        if self.shooting_speed - boost_amount >= 20:  # Minimum shooting speed limit
+        if self.shooting_speed - boost_amount >= 100:  # Minimum shooting speed limit
             self.shooting_speed -= boost_amount
 
 # Shiled class
@@ -416,6 +420,7 @@ while running:
                 for stone,bullets in stone_playerbullet_hit.items():
                     # show explosion
                     expl = Explosion(stone.rect.center, 'sm')
+                    play_explosion_sound()
                     all_sprites.add(expl)
                     # add score with the stone size
                     stone.reset_pvp_position()
@@ -435,6 +440,7 @@ while running:
                     stone.reset_pvp_position()
                     # show explosion
                     expl = Explosion(stone.rect.center, 'lg')
+                    play_explosion_sound()
                     all_sprites.add(expl)
                     for player in players:
                         # print("Player hit",player.player_id)
@@ -446,6 +452,8 @@ while running:
                 for stone,shields in shield_stone_hit.items():
                     # show explosion
                     expl = Explosion(stone.rect.center, 'sm')
+                    play_shield_sound()
+                    play_explosion_sound()
                     all_sprites.add(expl)
                     stone.reset_position()
                     for shield in shields:
@@ -458,6 +466,7 @@ while running:
                         if not (bullet.player_id == player.player_id):  # only hit the other player
                             # show explosion
                             expl = Explosion(bullet.rect.center, 'sm')
+                            play_explosion_sound()
                             all_sprites.add(expl)
                             bullet.kill()
                             player.set_health_point(-1)
@@ -471,6 +480,7 @@ while running:
                             # show explosion
                             expl = Explosion(bullet.rect.center, 'sm')
                             all_sprites.add(expl)
+                            play_explosion_sound()
                             bullet.kill()
                             shield.player.deactivate_shield()
 
@@ -484,9 +494,10 @@ while running:
                         elif skill.skill_type == 'speed_boost':
                             player.speed_boost(1)
                         elif skill.skill_type == 'shoot_speed_boost':
-                            player.shoot_speed_boost(20)
+                            player.shoot_speed_boost(10)
                         elif skill.skill_type == 'shield':
                             player.activate_shield()
+                        play_powerup_sound()
             
             all_sprites.draw(screen)  # Draw all sprites
             draw_game_ui()

@@ -28,20 +28,26 @@ class Skill(pygame.sprite.Sprite):
         self.rect.x = start_position_x
         self.rect.y = start_position_y
         self.speedy = random.randint(1, 4)
+        if game_mode_id >=2:  # PvP mode
+            # move horizontally
+            self.speedx = random.randint(1,4)
 
     def update(self):
 
-        if self.game_mode_id <2 :  # PvE mode
+        if self.game_mode_id < 2 :  # PvE mode
             self.rect.y += self.speedy
             if self.rect.top > self.screen_height:
                 self.kill()  # Remove the skill if it goes off the screen
         else:  # PvP mode
+            # Move horizontally to left or right based on player id
             if self.player_id == 1:
-                self.rect.y += self.speedy
+                # move right
+                self.rect.x += self.speedx
                 if self.rect.top > self.screen_height:
                     self.kill()  # Remove the skill if it goes off the screen
             else:
-                self.rect.y -= self.speedy
+                # move left
+                self.rect.x -= self.speedx
                 if self.rect.bottom < 0:
                     self.kill()  # Remove the skill if it goes off the screen
 

@@ -12,6 +12,7 @@ from game_image_loader import load_assets
 from star_background import init_star_particles, draw_star
 from stone import Stone
 from explosion import Explosion
+from skill import Skill
 
 # Set up display
 width, height = 800, 600
@@ -283,6 +284,7 @@ stones = pygame.sprite.Group()
 player_bullets = pygame.sprite.Group()
 player_shield = pygame.sprite.Group()
 players_group = pygame.sprite.Group()
+skills_group = pygame.sprite.Group()
 player_1 = Player(spaceship_img, width, height, 0)
 players_group.add(player_1)
 player_2 = Player(spaceship_img_2, width, height, 1)
@@ -390,12 +392,20 @@ while running:
             all_sprites.update()  # Update all sprites
             stone_playerbullet_hit = pygame.sprite.groupcollide(stones, player_bullets, False, True)  # Check for collisions between stones and player bullets
             if stone_playerbullet_hit:
-                for stone in stone_playerbullet_hit:
+                for stone,bullets in stone_playerbullet_hit.items():
                     # show explosion
                     expl = Explosion(stone.rect.center, 'sm')
                     all_sprites.add(expl)
                     # add score with the stone size
                     stone.reset_pvp_position()
+                    for bullet in bullets:
+                        # randomly drop skill with 30% chance
+                        if random.random() < 0.3:
+                            # get the bullet's player id
+                            player_id = bullet.player_id
+                            skill = Skill(width, height, stone.rect.x, stone.rect.y, game_mode_id, bullet.player_id)
+                            all_sprites.add(skill)
+                            skills_group.add(skill)
 
 
             player_stone_hit = pygame.sprite.groupcollide(stones, players_group, False, False)

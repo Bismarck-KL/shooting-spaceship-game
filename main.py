@@ -11,7 +11,7 @@ from game_image_loader import load_assets
 # Import classes
 from star_background import init_star_particles, draw_star
 from stone import Stone
-
+from explosion import Explosion
 
 game_mode = "single_player_pve" # default mode
 game_mode_id = 0
@@ -35,7 +35,7 @@ frame_per_seconds = 60
 pygame.init()
 
 # Load images
-spaceship_img, spaceship_img_2, expl_anim = load_assets()
+spaceship_img, spaceship_img_2 = load_assets()
 
 # Initialize star particles
 star_particles = init_star_particles(width, height)
@@ -239,31 +239,6 @@ class Shield(pygame.sprite.Sprite):
     def update(self):
         """Update the shield's position to follow the player."""
         self.rect.center = self.player.rect.center  # Keep the shield centered on the player
-
-# Explosion class
-class Explosion(pygame.sprite.Sprite):
-    def __init__(self, center, size):
-        pygame.sprite.Sprite.__init__(self)
-        self.size = size
-        self.image = expl_anim[self.size][0]
-        self.rect = self.image.get_rect()
-        self.rect.center = center
-        self.frame = 0
-        self.last_update = pygame.time.get_ticks()
-        self.frame_rate = 50
-
-    def update(self):
-        now = pygame.time.get_ticks()
-        if now - self.last_update > self.frame_rate:
-            self.last_update = now
-            self.frame += 1
-            if self.frame == len(expl_anim[self.size]):
-                self.kill()
-            else:
-                self.image = expl_anim[self.size][self.frame]
-                center = self.rect.center
-                self.rect = self.image.get_rect()
-                self.rect.center = center
 
 # Bullet class
 class Bullet(pygame.sprite.Sprite):

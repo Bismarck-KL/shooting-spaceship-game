@@ -34,7 +34,7 @@ frame_per_seconds = 60
 pygame.init()
 
 # Load images
-spaceship_img, spaceship_img_2, stone_img, expl_anim = load_assets()
+spaceship_img, spaceship_img_2, expl_anim = load_assets()
 
 
 def random_star_speed():
@@ -317,7 +317,7 @@ if game_mode_id == 1:  # multiplayer mode
 all_sprites.add(players_group)
  
 for _ in range(8):
-    stone = Stone(stone_img,width,height)
+    stone = Stone(width,height,game_mode_id)
     all_sprites.add(stone)
     stones.add(stone)
 
@@ -412,7 +412,7 @@ def try_again():
         players_group.add(player_2)
     all_sprites.add(players_group)
     for _ in range(8):
-        stone = Stone()
+        stone = Stone(width,height,game_mode_id)
         all_sprites.add(stone)
         stones.add(stone)
 

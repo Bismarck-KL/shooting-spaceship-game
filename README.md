@@ -1,21 +1,22 @@
 # Spaceship Game
 
-## Overview
+A small 2D arcade-style spaceship game built with Pygame. Dodge and destroy falling stones, collect power-ups, and play solo or against a friend.
 
-The Spaceship Game is a 2D arcade-style game developed using Pygame, featuring multiple game modes including single-player, cooperative PvE, and PvP gameplay. Players control spaceships to navigate through falling stones, shoot bullets, and compete or cooperate depending on the chosen mode. The game features vibrant visual effects, particle systems, and interactive gameplay mechanics.
+## Quick summary
+
+- Languages: Python 3
+- Main library: pygame
+- Game modes: Single-player PvE (default), Co-op/Multiple-player PvE, and PvP
+- Entry point / menu: `start.py` — run this to pick a mode and start the game
 
 ## Features
 
-- Multiple game modes (Single Player, Co-op PvE, and PvP)
-- Dynamic spaceship controls with particle trail effects
-- Automatic shooting system with custom bullet trajectories
-- Protective shield system
-- Health system with visual damage feedback
-- Collision detection and explosion animations
-- Randomized falling stones with rotation effects
-- Animated star background
-- Score tracking system
-- Interactive game menu
+- Single-player PvE and local 2-player modes (co-op PvE and PvP).
+- Automatic shooting by players with configurable shoot rate and power-ups.
+- Particle effects for ships and animated star background.
+- Shields, health, and visual feedback when players are hit.
+- Explosions and sound effects for shooting, shield, and destruction.
+- Random power-up drops from destroyed stones.
 
 ## Controls
 
@@ -25,7 +26,6 @@ The Spaceship Game is a 2D arcade-style game developed using Pygame, featuring m
 - **Spacebar**: Restart the game after a game over.
 - **Backspace**: Return to the game menu after a game over.
 
-
 ## Requirements
 
 - Python 3.x
@@ -34,66 +34,98 @@ The Spaceship Game is a 2D arcade-style game developed using Pygame, featuring m
 
 ## Installation
 
-1. Clone the repository or download the source code:
+1. Install Python 3.8+ (3.10/3.11 recommended).
+2. (Optional) Create and activate a virtual environment.
 
-   ```sh
-   git clone https://github.com/Bismarck-KL/shooting-spaceship-game.git
-   cd shooting-spaceship-game
-    ```
+On Windows PowerShell:
 
-2. Install the required libraries:
+```powershell
+python -m venv .venv; .\\.venv\\Scripts\\Activate.ps1
+```
 
-    ```sh
-    pip install -r requirements.txt
-    ```
+3. Install dependencies:
 
-## Running the Application
+```powershell
+pip install -r requirements.txt
+```
 
-  1. Ensure you are in the project directory with the virtual environment activated.
-  2. Run the application:
-     ```sh
-     python start.py
-     ```
-  3. Use the following controls:
-     - Arrow Keys: Control the spaceship movenment.
-     - Space Key: Retry ater the game end.
-     - Escape Key: Exit the application.
+## Running the game
 
-## File Structure
+From the project directory run the menu script (recommended):
 
-    shooting-spaceship-game/
-    ├── start.py                # Main menu and game mode selection
-    ├── main.py                 # Single player and PvE gameplay implementation
-    ├── pvp.py                 # PvP mode gameplay implementation
-    ├── color.py               # Color definitions
-    ├── game_image_loader.py   # Asset loading utilities
-    ├── loading_screen.py      # Loading screen implementation
-    ├── requirements.txt       # Python dependencies
-    ├── assets/               # Game resources
-        ├── images/           # Sprite and visual assets
-            ├── expl/        # Explosion animation frames
-            ├── rock3.png    # Stone sprites
-            ├── rock6.png    # Stone sprites
-            ├── spaceship.png # Player spaceship sprite
-        ├── sfx/            # Sound effect assets
+```powershell
+python start.py
+```
+
+The `main.py` script also accepts a command-line argument to choose a mode. Example:
+
+```powershell
+python main.py multiple_player_pve
+```
+
+## Project structure (important files)
+
+- `start.py`              — minimal menu / launcher
+- `main.py`               — single-player and co-op PvE gameplay
+- `pvp.py`                — local PvP gameplay
+- `game_image_loader.py`  — loads images used by the game
+- `game_sound_loader.py`  — plays short sfx used in the game
+- `color.py`              — color constants
+- `stone.py`              — falling stone (enemy) implementation
+- `skill.py`              — power-up items (heal, shield, speed, shoot-speed)
+- `explosion.py`          — explosion animation sprites
+- `star_background.py`    — animated starfield background
+- `assets/images/`        — image assets (spaceship, rocks, explosion frames)
+- `assets/sounds/`        — sound effects (shoot, explode, power-up, shield)
 
 ## Dependencies
 
-  Make sure to install the following dependencies using pip:
-    * pygame
+The required dependency is listed in `requirements.txt`:
 
-  You can install them by running:
-  ```sh
-  pip install pygame
-  ```
+- pygame
 
-## Acknowledgments
+Install with:
 
-- **Images and Assets**: Some images and background assets were sourced are used under their respective licenses.
-    - https://www.vecteezy.com/vector-art/49433251-pixel-art-space-rocket-illustration
-    - https://www.vecteezy.com/png/56280614-pixel-art-space-ship-element-icon-isolated
-- **Tutorials**: This project was developed following tutorials from YouTube, particularly those by [GrandmaCan -我阿嬤都會](https://youtu.be/61eX0bFAsYs?si=k2UWQ6V_wNKaspwT). 
+```powershell
+pip install -r requirements.txt
+```
 
-Special thanks to them for their helpful guidance.
+## Known issues and notes
+
+- Controls and behavior are local-only (no network multiplayer).
+- The game uses automatic shooting; there is no manual fire button.
+- On some systems pygame may require additional system packages (e.g., SDL). If you see audio or display errors, ensure your Python and pygame install are compatible with your OS.
+- If `start.py` is not launching on your system, run the desired mode (`main.py` or `pvp.py`) directly.
+
+## Assets and attribution
+
+Assets are included in the `assets/` folder. Some images and tutorial guidance were adapted from online resources and tutorials. See these references used during development:
+
+- Tutorial (inspiration/source): GrandmaCan - 我阿嬤都會 (YouTube) — https://youtu.be/61eX0bFAsYs
+- Vector / pixel assets used under their respective licenses from vecteezy and other free asset sites. Check the `assets/` files for original filenames and metadata.
+
+If you are the owner of any of the assets and want them removed or credited differently, open an issue or contact the repo owner.
+
+## Contributing
+
+Small fixes, bug reports, and PRs are welcome. If you open a PR, please:
+
+- Keep changes focused (one feature / fix per PR).
+- Run and verify the game runs locally.
+- Add a brief description of the change in the PR message.
+
+## License
+
+This project does not include a license file. If you want to release it under an open-source license, add a `LICENSE` file at the repository root.
+
+## Troubleshooting
+
+- Pygame import errors: verify `pip show pygame` and your active Python interpreter.
+- Display or audio issues: try upgrading/downgrading pygame to a compatible version for your platform.
+- If the game window opens but remains black or crashes, check the terminal output for Python exceptions and share them when opening an issue.
+
+---
+
+Made for learning and small local multiplayer fun. Have ideas or found bugs? Create an issue or submit a PR.
 
 

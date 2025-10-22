@@ -3,6 +3,7 @@ import random
 import os
 import sys
 import subprocess
+import random
 
 # Import colors and images
 from color import *
@@ -15,6 +16,7 @@ from explosion import Explosion
 from skill import Skill
 from bullet import Bullet
 from shield import Shield
+from enemy import Enemy, enemy_types
 
 # Import sounds
 from game_sound_loader import play_shoot_sound, play_explosion_sound, play_powerup_sound, play_shield_sound
@@ -259,6 +261,8 @@ player_bullets = pygame.sprite.Group()
 player_shield = pygame.sprite.Group()
 players_group = pygame.sprite.Group()
 skills_group = pygame.sprite.Group()
+enemys_group = pygame.sprite.Group()
+
 player_1 = Player(spaceship_img, width, height, 0)
 players_group.add(player_1)
 if game_mode_id == 1:  # multiplayer mode
@@ -393,6 +397,7 @@ while running:
             draw_star(star_particles, screen, width, height)
             all_sprites.update()  # Update all sprites
             stone_playerbullet_hit = pygame.sprite.groupcollide(stones, player_bullets, False, False)  # Check for collisions between stones and player bullets
+            # Handle stone and player bullet collisions
             if stone_playerbullet_hit:
                 for stone,bullets in stone_playerbullet_hit.items():
                     # show explosion
@@ -410,9 +415,8 @@ while running:
                             skill = Skill(width, height, stone.rect.x, stone.rect.y, game_mode_id, bullet.player_id)
                             all_sprites.add(skill)
                             skills_group.add(skill)
-                    
 
-
+            # Handle player and stone collisions
             player_stone_hit = pygame.sprite.groupcollide(stones, players_group, False, False)
             if player_stone_hit:
                 for stone,players in player_stone_hit.items():
@@ -425,6 +429,7 @@ while running:
                         player.set_health_point(-1)
                         player.flash_white()   
 
+            # Handle player shield collisions
             shield_stone_hit = pygame.sprite.groupcollide(stones, player_shield, False,False)
             if shield_stone_hit:
                 for stone,shields in shield_stone_hit.items():
@@ -437,6 +442,7 @@ while running:
                     for shield in shields:
                         shield.player.deactivate_shield()
 
+            # Handle player and skill collisions
             player_skill_hit = pygame.sprite.groupcollide(skills_group, players_group, True, False)
             if player_skill_hit:
                 for skill,players in player_skill_hit.items():
@@ -468,6 +474,35 @@ while running:
                         elif skill.skill_type == 'shoot_speed_boost':
                             player.shoot_speed_boost(10)  # Decrease shoot speed by 10
                         play_powerup_sound()
+
+            # Handle enemy and palyer collisions
+            player_enemy_hit = pygame.sprite.groupcollide(enemys_group, players_group, True, False)
+            if player_enemy_hit:    
+                for enemy,players in player_enemy_hit.items():
+                    # show explosion
+                    expl = Explosion(enemy.rect.center, 'md')
+                    play_explosion_sound()
+                    all_sprites.add(expl)
+                    for player in players:
+                        player.set_health_point(-1)
+                        player.flash_white()
+
+            # Handle enemy and player bullet collisions
+            enemy_playerbullet_hit = pygame.sprite.groupcollide(enemys_group, player_bullets, False, True)
+            if enemy_playerbullet_hit:
+                for enemy,bullets in enemy_playerbullet_hit.items():
+                    # show explosion
+                    expl = Explosion(enemy.rect.center, 'sm')
+                    play_explosion_sound()
+                    all_sprites.add(expl)
+                    enemy.update_health_point(-1)  # Decrease enemy health by number of bullets hit
+
+            # Randomly spawn enemy with 50% each 2 seconds
+            if random.random() < 0.5 and game_mode_id <2:
+                if pygame.time.get_ticks() % 2000 < 50:  # Check every ~50 ms
+                    enemy = Enemy(width, height, random.choice(list(enemy_types.keys())))
+                    all_sprites.add(enemy)
+                    enemys_group.add(enemy)
 
             all_sprites.draw(screen)  # Draw all sprites
             draw_game_ui()

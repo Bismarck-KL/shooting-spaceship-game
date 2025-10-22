@@ -102,7 +102,8 @@ pip install -r requirements.txt
 Assets are included in the `assets/` folder. Some images and tutorial guidance were adapted from online resources and tutorials. See these references used during development:
 
 - Tutorial (inspiration/source): GrandmaCan - 我阿嬤都會 (YouTube) — https://youtu.be/61eX0bFAsYs
-- Vector / pixel assets used under their respective licenses from vecteezy and other free asset sites. Check the `assets/` files for original filenames and metadata.
+- Vector / pixel assets used under their respective licenses from vecteezy and other free asset sites. 
+  - https://www.vecteezy.com/members/stockgiu
 
 If you are the owner of any of the assets and want them removed or credited differently, open an issue or contact the repo owner.
 

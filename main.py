@@ -31,13 +31,14 @@ if len(sys.argv) > 1:
         game_mode_id = 1
 
 # Set up display
-width, height = 800, 600
+width, height = 1200, 900
 screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Spaceship Game")
 clock = pygame.time.Clock()
 running = True
 
 frame_per_seconds = 60
+stone_max_count = 6
 
 # Initialize pygame
 pygame.init()
@@ -270,7 +271,7 @@ if game_mode_id == 1:  # multiplayer mode
     players_group.add(player_2)
 all_sprites.add(players_group)
  
-for _ in range(8):
+for _ in range(stone_max_count):
     stone = Stone(width,height,game_mode_id)
     all_sprites.add(stone)
     stones.add(stone)
@@ -365,13 +366,17 @@ def try_again():
         player_2 = Player(spaceship_img, width, height, 1)
         players_group.add(player_2)
     all_sprites.add(players_group)
-    for _ in range(8):
+    for _ in range(stone_max_count):
         stone = Stone(width,height,game_mode_id)
         all_sprites.add(stone)
         stones.add(stone)
 
     game_status = "Playing"
     game_score = 0
+
+def add_score(delta):
+    global game_score
+    game_score += delta
 
 while running:
 
@@ -480,7 +485,7 @@ while running:
             if player_enemy_hit:    
                 for enemy,players in player_enemy_hit.items():
                     # show explosion
-                    expl = Explosion(enemy.rect.center, 'md')
+                    expl = Explosion(enemy.rect.center, 'lg')
                     play_explosion_sound()
                     all_sprites.add(expl)
                     for player in players:
@@ -497,10 +502,10 @@ while running:
                     all_sprites.add(expl)
                     enemy.update_health_point(-1)  # Decrease enemy health by number of bullets hit
 
-            # Randomly spawn enemy with 50% each 2 seconds
-            if random.random() < 0.5 and game_mode_id <2:
+            # Randomly spawn enemy with 80% each 2 seconds
+            if random.random() < 0.8 and game_mode_id <2:
                 if pygame.time.get_ticks() % 2000 < 50:  # Check every ~50 ms
-                    enemy = Enemy(width, height, random.choice(list(enemy_types.keys())))
+                    enemy = Enemy(width, height, random.choice(list(enemy_types.keys())), score_callback=add_score)
                     all_sprites.add(enemy)
                     enemys_group.add(enemy)
 

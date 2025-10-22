@@ -44,7 +44,7 @@ def explosion_img_loader():
 
 
 def stone_img_loader():
-
+    
     # Load stone images
     stone_img = [None, None]  
     try:
@@ -67,3 +67,21 @@ def stone_img_loader():
         print(f"rock3.png exists: {os.path.exists(os.path.join('assets/images/', 'rock3.png'))}")
         print(f"rock6.png exists: {os.path.exists(os.path.join('assets/images/', 'rock6.png'))}")
         raise  # Re-raise the exception to prevent the game from continuing with invalid images
+
+
+def enemy_img_loader():
+    # Load enemy images
+    enemy_img_1 = None
+    enemy_img_2 = None
+    enemy_img_3 = None
+
+    try:
+        enemy_img_1 = pygame.image.load(os.path.join("assets/images/", "enemy_1.png")).convert()
+        enemy_img_2 = pygame.image.load(os.path.join("assets/images/", "enemy_2.png")).convert()
+        enemy_img_3 = pygame.image.load(os.path.join("assets/images/", "enemy_3.png")).convert()
+    except pygame.error as e:
+        print(f"Error loading enemy image file: {e}")
+        enemy_img = None  # Set to None if loading fails
+    enemy_img = [enemy_img_1, enemy_img_2, enemy_img_3]
+
+    return enemy_img

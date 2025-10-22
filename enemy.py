@@ -9,7 +9,7 @@ enemy_images = enemy_img_loader()
 enemy_types = {
     'basic': { 'size': (50, 50), 'health_point': 3, 'speed': 2, 'image': enemy_images[0], 'score': 20},
     'fast': {'size': (50, 50), 'health_point': 1, 'speed': 4, 'image': enemy_images[1], 'score': 20},
-    'strong': {'size': (100, 100), 'health_point': 10, 'speed': 1, 'image': enemy_images[2], 'score': 50}
+    'strong': {'size': (100, 100), 'health_point': 6, 'speed': 1, 'image': enemy_images[2], 'score': 50}
 }
 
 # Enemy class

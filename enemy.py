@@ -1,12 +1,15 @@
 import  pygame
-from color import gray, black
+from color import gray, black, white
 import random
+from game_image_loader import enemy_img_loader
+
+enemy_images = enemy_img_loader()
 
 # Enemy types
 enemy_types = {
-    'basic': {'color': gray, 'size': (40, 30), 'health_point': 1, 'speed': 2},
-    'fast': {'color': gray, 'size': (30, 20), 'health_point': 1, 'speed': 4},
-    'strong': {'color': gray, 'size': (50, 40), 'health_point': 3, 'speed': 1}
+    'basic': { 'size': (50, 50), 'health_point': 1, 'speed': 2, 'image': enemy_images[0]},
+    'fast': {'size': (50, 50), 'health_point': 1, 'speed': 4, 'image': enemy_images[1]},
+    'strong': {'size': (100, 100), 'health_point': 3, 'speed': 0.5, 'image': enemy_images[2]}
 }
 
 # Enemy class
@@ -16,14 +19,13 @@ class Enemy(pygame.sprite.Sprite):
         self.screen_width = screen_width
         self.screen_height = screen_height
 
-        self.image = pygame.Surface(enemy_types[enemy_type]['size'])
-        self.image.fill(enemy_types[enemy_type]['color'])
-        self.image.set_colorkey(black)
-        pygame.draw.polygon(self.image, enemy_types[enemy_type]['color'], [(0, 30), (20, 0), (40, 30)])  # Simple triangle shape
+        self.image = pygame.transform.scale(enemy_types[enemy_type]['image'], enemy_types[enemy_type]['size'])
+        self.image.set_colorkey(white)
+        self.image = pygame.transform.rotate(self.image, 180)
 
         self.rect = self.image.get_rect()
-        self.rect.x = random.randint(0, screen_width - self.rect.width)
-        self.rect.y = random.randint(-100, -40)
+        self.rect.x = random.randrange(0, screen_width - self.rect.width)
+        self.rect.y = random.randrange(-100, -40)
         self.speedy = enemy_types[enemy_type]['speed']
         self.health_point = enemy_types[enemy_type]['health_point']
 

@@ -4,9 +4,9 @@ import random
 
 # Enemy types
 enemy_types = {
-    'basic': {'color': gray, 'size': (40, 30), 'speed': 2},
-    'fast': {'color': gray, 'size': (30, 20), 'speed': 4},
-    'strong': {'color': gray, 'size': (50, 40), 'speed': 1}
+    'basic': {'color': gray, 'size': (40, 30), 'health_point': 1, 'speed': 2},
+    'fast': {'color': gray, 'size': (30, 20), 'health_point': 1, 'speed': 4},
+    'strong': {'color': gray, 'size': (50, 40), 'health_point': 3, 'speed': 1}
 }
 
 # Enemy class
@@ -25,9 +25,15 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.x = random.randint(0, screen_width - self.rect.width)
         self.rect.y = random.randint(-100, -40)
         self.speedy = enemy_types[enemy_type]['speed']
+        self.health_point = enemy_types[enemy_type]['health_point']
 
     def update(self):
         # move downwards
         self.rect.y += self.speedy
         if self.rect.top > self.screen_height:
             self.kill()  # Remove the enemy if it goes off the screen
+
+    def update_health_point(self, hp):
+        self.health_point += hp
+        if self.health_point <= 0:
+            self.kill()  # Remove the enemy if health is 0 or less

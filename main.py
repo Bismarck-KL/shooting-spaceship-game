@@ -13,6 +13,7 @@ from star_background import init_star_particles, draw_star
 from stone import Stone
 from explosion import Explosion
 from skill import Skill
+from bullet import Bullet
 
 # Import sounds
 from game_sound_loader import play_shoot_sound, play_explosion_sound, play_powerup_sound, play_shield_sound
@@ -89,6 +90,10 @@ class Player(pygame.sprite.Sprite):
                 self.rect.center = (width // 4, height - 60)
         else:  # Player 2
             self.rect.center = (3 * width // 4, height - 60)
+
+        # Screen dimensions
+        self.screen_width = width
+        self.screen_height = height
 
         # Player attributes
         self.player_id = player_id
@@ -190,7 +195,7 @@ class Player(pygame.sprite.Sprite):
 
     def shoot(self):
         """Shoot a bullet."""
-        bullet = Bullet(self.rect.centerx, self.rect.top, 'player', self.player_id)
+        bullet = Bullet(self.rect.centerx, self.rect.top,self.screen_width,self.screen_height, 'player', self.player_id)
         all_sprites.add(bullet)
         player_bullets.add(bullet)
         play_shoot_sound()
@@ -262,27 +267,6 @@ class Shield(pygame.sprite.Sprite):
         """Update the shield's position to follow the player."""
         self.rect.center = self.player.rect.center  # Keep the shield centered on the player
 
-# Bullet class
-class Bullet(pygame.sprite.Sprite):
-    def __init__(self, x, y, type, player_id):
-        super().__init__()
-        self.player_id = player_id
-        self.image = pygame.Surface((5, 10))
-        if type == 'player':
-            self.image.fill(yellow)  # Yellow bullet for player
-            self.speedy = -10
-        else:    
-            self.image.fill(red)  # Red bullet for enemy
-            self.speedy = 5
-
-        self.type = type
-        self.rect = self.image.get_rect()
-        self.rect.center = (x, y)
-
-    def update(self):
-        self.rect.y += self.speedy
-        if self.rect.bottom < 0 or self.rect.top > height:
-            self.kill()  # Remove the bullet if it goes off-screen
 
 # Create sprite groups
 all_sprites = pygame.sprite.Group()

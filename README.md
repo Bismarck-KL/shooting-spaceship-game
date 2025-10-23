@@ -1,6 +1,6 @@
 # Spaceship Game
 
-A small 2D arcade-style spaceship game built with Pygame. Dodge and destroy falling stones, collect power-ups, and play solo or against a friend.
+A dynamic 2D arcade-style space shooter built with Pygame featuring multiple game modes, power-ups, and various enemy types. Players can enjoy solo challenges, cooperative play, or competitive PvP action.
 
 ## Quick summary
 
@@ -11,12 +11,21 @@ A small 2D arcade-style spaceship game built with Pygame. Dodge and destroy fall
 
 ## Features
 
-- Single-player PvE and local 2-player modes (co-op PvE and PvP).
-- Automatic shooting by players with configurable shoot rate and power-ups.
-- Particle effects for ships and animated star background.
-- Shields, health, and visual feedback when players are hit.
-- Explosions and sound effects for shooting, shield, and destruction.
-- Random power-up drops from destroyed stones.
+### Game Modes
+- Single-player: Face waves of enemies and asteroids solo
+- Co-op PvE: Team up with a friend against increasing challenges
+- PvP: Compete head-to-head in split-arena combat
+
+### Gameplay Elements
+- Three distinct enemy types:
+  - Normal Enemies: Balanced attributes
+  - Fast Enemies: Quick but fragile, zigzag movement
+  - Tank Enemies: Slow but tough, requires multiple hits
+- Procedurally generated asteroid fields
+- Automatic weapon systems with upgradeable fire rate
+- Particle effects for thrusters and explosions
+- Animated starfield background
+- Health system with power-up restoration
 
 ## Controls
 
@@ -63,20 +72,42 @@ The `main.py` script also accepts a command-line argument to choose a mode. Exam
 python main.py multiple_player_pve
 ```
 
-## Project structure (important files)
+## Project Structure
 
-- `start.py`              — minimal menu / launcher
-- `main.py`               — single-player and co-op PvE gameplay
-- `pvp.py`                — local PvP gameplay
-- `game_image_loader.py`  — loads images used by the game
-- `game_sound_loader.py`  — plays short sfx used in the game
-- `color.py`              — color constants
-- `stone.py`              — falling stone (enemy) implementation
-- `skill.py`              — power-up items (heal, shield, speed, shoot-speed)
-- `explosion.py`          — explosion animation sprites
-- `star_background.py`    — animated starfield background
-- `assets/images/`        — image assets (spaceship, rocks, explosion frames)
-- `assets/sounds/`        — sound effects (shoot, explode, power-up, shield)
+### Core Files
+- `start.py` - Game menu and mode selection
+- `main.py` - PvE gameplay (single/co-op)
+- `pvp.py` - PvP gameplay implementation
+
+### Game Components
+- `classes/`
+  - `enemies/` - Enemy type implementations
+    - `enemy_base.py` - Base enemy class
+    - `fast_enemy.py` - Quick zigzagging enemy
+    - `tank_enemy.py` - Durable slow enemy
+    - `normal_enemy.py` - Balanced enemy type
+  - `bullet.py` - Projectile mechanics
+  - `explosion.py` - Explosion animations
+  - `shield.py` - Shield power-up
+  - `skill.py` - Power-up system
+  - `stone.py` - Asteroid objects
+
+### Utils
+- `utils/`
+  - `game_image_loader.py` - Asset loading system
+  - `game_sound_loader.py` - Audio management
+  - `star_background.py` - Parallax starfield
+  - `color.py` - Color definitions
+
+### Assets
+- `assets/`
+  - `images/`
+    - `spaceship.png` - Player 1 sprite
+    - `spaceship_2.png` - Player 2 sprite
+    - `rock3.png`, `rock6.png` - Asteroid sprites
+    - `expl/` - Explosion animation frames
+  - `sounds/` - Sound effects
+    - Shoot, explosion, power-up, and shield sounds
 
 ## Dependencies
 

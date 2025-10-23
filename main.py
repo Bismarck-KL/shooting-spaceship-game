@@ -49,7 +49,7 @@ class Particle(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
         self.image = pygame.Surface((3, 5))  # Small particle size
-        self.image.fill((255, 165, 0))  # Orange color for the fire effect
+        self.image.fill(orange)  # Orange color for the fire effect
         self.rect = self.image.get_rect(center=(x, y))
         
         # Set a random velocity
@@ -508,11 +508,11 @@ while running:
                         k=1
                     )[0]
                     if enemy_type == 'base':
-                        enemy = NormalEnemy(width, height,score_callback=add_score)
+                        enemy = NormalEnemy(width, height,score_callback=add_score, screen=screen)
                     elif enemy_type == 'fast':
-                        enemy = FastEnemy(width, height,score_callback=add_score)
+                        enemy = FastEnemy(width, height,score_callback=add_score, screen=screen)
                     elif enemy_type == 'tank':
-                        enemy = TankEnemy(width, height,score_callback=add_score)
+                        enemy = TankEnemy(width, height,score_callback=add_score, screen=screen)
                     all_sprites.add(enemy)
                     enemys_group.add(enemy)
 

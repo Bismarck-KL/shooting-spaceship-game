@@ -3,7 +3,6 @@
 from .stone import Stone
 from .skill import Skill
 from .explosion import Explosion
-# from .enemy import Enemy
 from .shield import Shield
 from .bullet import Bullet
 from .enemies import Enemy, FastEnemy, TankEnemy, NormalEnemy

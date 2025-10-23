@@ -1,6 +1,6 @@
 #  skill class, create after player destroy the stone, and feature different skills to help player
 import pygame
-from color import green, red, blue, yellow
+from utils.color import green, red, blue, yellow
 import random
 import os
 # Skill types

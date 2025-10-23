@@ -1,6 +1,6 @@
 import pygame
 import random
-from color import star_color
+from utils.color import star_color
 
 def init_star_particles(width, height, num_particles=20):
     """Initialize star particles with given screen dimensions"""

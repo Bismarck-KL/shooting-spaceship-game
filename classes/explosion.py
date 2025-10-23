@@ -1,5 +1,5 @@
 import pygame
-from game_image_loader import explosion_img_loader  
+from utils.game_image_loader import explosion_img_loader  
 
 expl_anim = explosion_img_loader()
 

@@ -1,6 +1,6 @@
 import pygame
 import os
-from color import black
+from utils.color import black
 
 pygame.init()
 # Set up a temporary display mode for image loading

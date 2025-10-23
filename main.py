@@ -6,20 +6,15 @@ import subprocess
 import random
 
 # Import colors and images
-from color import *
-from game_image_loader import load_assets
+from utils.color import *
+from utils.game_image_loader import load_assets
 
 # Import classes
-from star_background import init_star_particles, draw_star
-from stone import Stone
-from explosion import Explosion
-from skill import Skill
-from bullet import Bullet
-from shield import Shield
-from enemy import Enemy, enemy_types
+from utils.star_background import init_star_particles, draw_star
+from classes import  Stone, Bullet, Shield, Skill, Explosion, Enemy, FastEnemy, TankEnemy, NormalEnemy
 
 # Import sounds
-from game_sound_loader import play_shoot_sound, play_explosion_sound, play_powerup_sound, play_shield_sound
+from utils.game_sound_loader import play_shoot_sound, play_explosion_sound, play_powerup_sound, play_shield_sound
 
 game_mode = "single_player_pve" # default mode
 game_mode_id = 0
@@ -505,7 +500,19 @@ while running:
             # Randomly spawn enemy with 80% each 2 seconds
             if random.random() < 0.8 and game_mode_id <2:
                 if pygame.time.get_ticks() % 2000 < 50:  # Check every ~50 ms
-                    enemy = Enemy(width, height, random.choice(list(enemy_types.keys())), score_callback=add_score)
+                    # enemy = Enemy(width, height, random.choice(list(Enemy.enemy_types.keys())), score_callback=add_score)
+                    # set % for each enemy type
+                    enemy_type = random.choices(
+                        population=['base', 'fast', 'tank'],
+                        weights=[0.5, 0.3, 0.2],  # Adjust weights as needed
+                        k=1
+                    )[0]
+                    if enemy_type == 'base':
+                        enemy = NormalEnemy(width, height,score_callback=add_score)
+                    elif enemy_type == 'fast':
+                        enemy = FastEnemy(width, height,score_callback=add_score)
+                    elif enemy_type == 'tank':
+                        enemy = TankEnemy(width, height,score_callback=add_score)
                     all_sprites.add(enemy)
                     enemys_group.add(enemy)
 

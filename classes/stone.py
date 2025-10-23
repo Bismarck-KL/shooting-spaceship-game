@@ -1,8 +1,8 @@
 # Class of stone objects
 import pygame
 import random   
-from color import black    
-from game_image_loader import stone_img_loader
+from utils.color import black    
+from utils.game_image_loader import stone_img_loader
 import os
 
 # Load images

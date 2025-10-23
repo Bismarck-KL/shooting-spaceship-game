@@ -5,21 +5,18 @@ import sys
 import subprocess
 
 # Import colors and images
-from color import *
-from game_image_loader import load_assets
+from utils.color import *
+from utils.game_image_loader import load_assets
 
 # Import classes
-from star_background import init_star_particles, draw_star
-from stone import Stone
-from explosion import Explosion
-from skill import Skill
-from shield import Shield
+from utils.star_background import init_star_particles, draw_star
+from classes import Stone, Bullet, Shield, Skill, Explosion
 
 # Import sound functions
-from game_sound_loader import play_shoot_sound, play_explosion_sound, play_powerup_sound, play_shield_sound
+from utils.game_sound_loader import play_shoot_sound, play_explosion_sound, play_powerup_sound, play_shield_sound
 
 # Set up display
-width, height = 800, 600
+width, height = 1200, 900
 screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Spaceship Game - PvP Mode")
 clock = pygame.time.Clock()

@@ -11,7 +11,7 @@ from utils.game_image_loader import load_assets
 
 # Import classes
 from utils.star_background import init_star_particles, draw_star
-from classes import  Stone, Bullet, Shield, Skill, Explosion, Enemy, FastEnemy, TankEnemy, NormalEnemy
+from classes import  Stone, Bullet, Shield, Skill, Explosion, FastEnemy, TankEnemy, NormalEnemy
 
 # Import sounds
 from utils.game_sound_loader import play_shoot_sound, play_explosion_sound, play_powerup_sound, play_shield_sound

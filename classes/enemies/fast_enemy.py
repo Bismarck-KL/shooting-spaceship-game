@@ -8,9 +8,9 @@ enemy_images = enemy_img_loader()
 
 class FastEnemy(Enemy):
     """Fast-moving enemy that zigzags across the screen"""
-    def __init__(self, screen_width, screen_height, score_callback=None):
+    def __init__(self, screen_width, screen_height, score_callback=None, screen=None):
         # Call parent class constructor first
-        super().__init__(screen_width, screen_height, score_callback)
+        super().__init__(screen_width, screen_height, score_callback, screen=screen)
 
         # Set up the enemy sprite
         self.image = pygame.transform.scale(enemy_images[1], (50, 50))
@@ -29,15 +29,19 @@ class FastEnemy(Enemy):
         self.score = 20
 
     def update(self):
-        """Move in a zigzag pattern"""
-        self.rect.y += self.speed_y
-        self.rect.x += self.speed_x * self.direction
+        """Move in a zigzag pattern and handle particles"""
+        # Update position
+        self.speed_y = 4  # Maintain speed
+        self.speed_x = 2 * self.direction
         
-        # Reverse direction at screen edges
+        # Call parent update for basic movement and particles
+        super().update()
+        
+        # Handle screen boundaries
         if self.rect.right >= self.screen_width or self.rect.left <= 0:
             self.direction *= -1
         
         if self.rect.top > self.screen_height:
             # back to top
             self.rect.y = -self.rect.height
-            self.rect.x = random.randint(0, self.screen_width - self.rect.width)    
+            self.rect.x = random.randint(0, self.screen_width - self.rect.width)
